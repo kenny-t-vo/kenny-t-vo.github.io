@@ -1,7 +1,6 @@
 # kenny vo, photography.
 
-Self-hosted photography portfolio as a fit-to-window
-spread viewer.
+Self-hosted photography portfolio as a fit-to-window spread viewer.
 
 **Live:** https://kenny-t-vo.github.io/kennyvophotography/
 
@@ -16,47 +15,54 @@ derives three WebP tiers:
 | `pages/full/` | 2600 px | click-to-zoom detail (native 300 dpi) | 19 MB |
 | `pages/thumb/` | 320 px | index grid + blur-up placeholders | 244 KB |
 
-A reader downloads roughly 300 KB per spread instead of the 56 MB PDF, and pages
-appear instantly because the next and previous spreads are prefetched.
+A reader downloads roughly 300 KB per spread instead of the 56 MB PDF. The next and
+previous spreads prefetch, so turning a page is instant.
 
 Pages are paired the way the book was set: page 1 alone as the cover, then
-2–3, 4–5 … 30–31, then 32 alone. Images that bleed across the gutter line up
-exactly, because each leaf is sized to an exact half of the spread.
+2–3, 4–5 … 30–31, then 32 alone. Images that bleed across the gutter line up,
+because each leaf is sized to an exact half of the spread.
 
 ## Reading it
 
 | | |
 |---|---|
 | `←` `→` `space` | turn spreads |
-| click a page, or `Z` | zoom the spread at full resolution — drag to pan, scroll to zoom |
+| click a page, or `Z` | zoom the spread at full resolution (drag to pan, scroll to zoom) |
 | `G` | index of all spreads |
 | `F` | fullscreen |
 | `Home` / `End` | cover / back cover |
 | swipe | turn spreads on touch |
 
-Narrow or portrait windows switch to one page at a time. `#p12` in the URL deep-links
-to a page, so you can send someone straight to a specific spread.
+Narrow or portrait windows switch to one page at a time. `#p12` in the URL opens at
+that page, so you can link someone straight to a spread.
 
 ## Updating the portfolio
+
+The build tools, once:
+
+```bash
+brew install poppler webp
+pip3 install pillow
+```
+
+Then for each new edition of the book:
 
 ```bash
 ./build.sh path/to/kennyvophotography.pdf
 git add -A && git commit -m "update portfolio" && git push
 ```
 
-When you edit `assets/app.js` or `assets/style.css`, bump the `?v=` number on
-their `<script>`/`<link>` tags in `index.html`. GitHub Pages caches HTML and assets
-for ten minutes independently, so without the bump a returning visitor can briefly
-load the new page against the old script. The number is arbitrary — just change it.
-
 `build.sh` rewrites the page images, `pages/manifest.json`, `assets/book.js`
-(page count + page aspect ratio, read by the viewer) and the social card. Any page
-count works — the pairing and the index adapt. Requires:
+(page count and page aspect ratio, read by the viewer) and the social card. Any page
+count works; the pairing and the index adapt.
 
-```bash
-brew install poppler webp
-pip3 install pillow
-```
+## Editing the viewer
+
+Bump the `?v=` number on the `<script>` and `<link>` tags in `index.html` whenever
+you change `assets/app.js` or `assets/style.css`. GitHub Pages caches the HTML and
+the assets for ten minutes independently, so without the bump a returning visitor
+can load the new page against the old script. The number is arbitrary; any change
+to it works.
 
 ## Deploying
 
