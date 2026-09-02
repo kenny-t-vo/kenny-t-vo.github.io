@@ -73,6 +73,20 @@
       const show = () => img.classList.add('ready');
       img.complete ? show() : img.addEventListener('load', show, { once: true });
       leaf.append(img);
+
+      /* the pdf's own hyperlinks, laid back over the rasterised page */
+      for (const L of (BOOK.links && BOOK.links[n]) || []) {
+        const a = document.createElement('a');
+        a.className = 'pin';
+        a.href = L.href;
+        a.setAttribute('aria-label', L.href.replace(/^mailto:/, ''));
+        if (/^https?:/i.test(L.href)) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+        a.style.left   = L.x * 100 + '%';
+        a.style.top    = L.y * 100 + '%';
+        a.style.width  = L.w * 100 + '%';
+        a.style.height = L.h * 100 + '%';
+        leaf.append(a);
+      }
       return leaf;
     }));
 
@@ -179,8 +193,9 @@
     const leaf = down.target.closest?.('.leaf');
     if (moved > 44 && Math.abs(dx) > Math.abs(dy) * 1.4) {
       step(dx < 0 ? 1 : -1);
-    } else if (moved < 10 && leaf && Date.now() - down.t < 600) {
-      openLens(idx);
+    } else if (moved < 10 && leaf && Date.now() - down.t < 600
+               && !down.target.closest?.('a')) {
+      openLens(idx);          // a tap on a link belongs to the link
     }
     down = null;
   });

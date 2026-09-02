@@ -71,6 +71,21 @@ body{
 
 .book.zoomable .leaf{ cursor:zoom-in; }
 
+/* The page prints its links blue and underlined; these are the live targets,
+   invisible until hovered. ::after widens the tap area without moving the box —
+   kept small, because some of these sit only a few points apart. */
+.leaf .pin{
+  position:absolute;
+  display:block;
+  z-index:2;
+  text-decoration:none;
+  cursor:pointer;
+  transition:background var(--fade) ease;
+}
+.leaf .pin::after{ content:""; position:absolute; inset:-2px; }
+.leaf .pin:hover{ background:rgba(0,0,238,.10); }
+.leaf .pin:focus-visible{ outline:1px solid var(--blue); outline-offset:1px; }
+
 /* the crease. scaled by --gutter-strength, so 0 removes it entirely. */
 .book[data-leaves="2"]::after{
   content:"";

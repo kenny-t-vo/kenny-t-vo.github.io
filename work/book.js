@@ -3,5 +3,94 @@ window.BOOK = {
   pages: 16,
   aspect: 0.77266,   /* leaf width / height */
   fullWidth: 2600,     /* px width of the zoom tier */
-  pairing: "spreads"   /* "cover": 1, 2-3 ... N alone | "spreads": 1-2, 3-4 ... */
+  pairing: "spreads",   /* "cover": 1, 2-3 ... N alone | "spreads": 1-2, 3-4 ... */
+  /* live links lifted from the pdf, as fractions of a leaf */
+  links: {
+  "2": [
+    {
+      "x": 0.1683,
+      "y": 0.61139,
+      "w": 0.15727,
+      "h": 0.01701,
+      "href": "https://www.instagram.com/seefourtytwo/"
+    }
+  ],
+  "4": [
+    {
+      "x": 0.1683,
+      "y": 0.61139,
+      "w": 0.13903,
+      "h": 0.01701,
+      "href": "https://scaffoldjournal.com/"
+    }
+  ],
+  "6": [
+    {
+      "x": 0.1683,
+      "y": 0.61139,
+      "w": 0.17551,
+      "h": 0.01701,
+      "href": "https://www.instagram.com/eitherordaniels/"
+    }
+  ],
+  "8": [
+    {
+      "x": 0.1683,
+      "y": 0.61139,
+      "w": 0.28749,
+      "h": 0.01701,
+      "href": "https://www.daniels.utoronto.ca/events/1781456400/responsive-architecture-surface-system"
+    }
+  ],
+  "10": [
+    {
+      "x": 0.1683,
+      "y": 0.61139,
+      "w": 0.25037,
+      "h": 0.01701,
+      "href": "https://civmin.utoronto.ca/robot-made-2025/"
+    }
+  ],
+  "12": [
+    {
+      "x": 0.1683,
+      "y": 0.61139,
+      "w": 0.29315,
+      "h": 0.01701,
+      "href": "https://www.instagram.com/p/C3ym38WJET5/?img_index=1"
+    }
+  ],
+  "14": [
+    {
+      "x": 0.1683,
+      "y": 0.61263,
+      "w": 0.20874,
+      "h": 0.01547,
+      "href": "https://www.instagram.com/p/DFQu8ouyOOk/"
+    }
+  ],
+  "16": [
+    {
+      "x": 0.1683,
+      "y": 0.66033,
+      "w": 0.04941,
+      "h": 0.01309,
+      "href": "https://www.linkedin.com/in/kenny-t-vo/"
+    },
+    {
+      "x": 0.1683,
+      "y": 0.68306,
+      "w": 0.07303,
+      "h": 0.01309,
+      "href": "https://kenny-t-vo.github.io/kennyvophotography/"
+    },
+    {
+      "x": 0.1683,
+      "y": 0.70578,
+      "w": 0.03394,
+      "h": 0.01309,
+      "href": "mailto:kenny.t.vo%40outlook.com?subject="
+    }
+  ]
+}
 };

@@ -3,5 +3,17 @@ window.BOOK = {
   pages: 32,
   aspect: 0.77266,   /* leaf width / height */
   fullWidth: 2600,     /* px width of the zoom tier */
-  pairing: "cover"   /* "cover": 1, 2-3 ... N alone | "spreads": 1-2, 3-4 ... */
+  pairing: "cover",   /* "cover": 1, 2-3 ... N alone | "spreads": 1-2, 3-4 ... */
+  /* live links lifted from the pdf, as fractions of a leaf */
+  links: {
+  "32": [
+    {
+      "x": 0.35784,
+      "y": 0.6376,
+      "w": 0.14504,
+      "h": 0.01309,
+      "href": "mailto:kenny.t.vo%40outlook.com?subject="
+    }
+  ]
+}
 };

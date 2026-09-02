@@ -57,7 +57,7 @@ The build tools, once:
 
 ```bash
 brew install poppler webp
-pip3 install pillow
+pip3 install pillow pypdf
 ```
 
 Then for each new edition, naming the PDF and the book directory. **Start with the
@@ -91,6 +91,23 @@ Two messages worth recognising:
 - **"your branch and 'origin/main' have diverged"** — you committed locally while a
   different commit sits on the remote, usually a github.com edit. `git pull --rebase`
   replays your commit on top of it; then push. Nothing is lost either way.
+
+## Hyperlinks
+
+The books draw their links blue and underlined, but the live targets are PDF
+annotations, and rasterising a page throws them away. `build.sh` lifts the
+rectangles out with `pypdf` and stores them in `book.js` as fractions of a leaf;
+the viewer lays transparent anchors back over the page, so the printed links are
+clickable again. Rectangles are clipped per leaf, so a link crossing the gutter of
+a 2-up export survives being split.
+
+The cost is the reason to do it this way rather than embedding the PDF: 1.7 KB for
+the work samples' ten links, 239 bytes for the photography's one. Nothing is added
+to the images.
+
+Links are live in the reading view, not in the zoom lens, where dragging to pan
+would fire them by accident. If `pypdf` is missing the build still succeeds and
+says so, it just carries no links.
 
 ## The knobs
 

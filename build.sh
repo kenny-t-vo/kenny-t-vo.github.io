@@ -59,7 +59,7 @@ echo "→ rendering masters at $((FULL_W * LEAVES)) px wide"
 pdftoppm -png -scale-to-x $((FULL_W * LEAVES)) -scale-to-y -1 "$PDF" "$WORK/m"
 
 mkdir -p "$DEST/pages/full" "$DEST/pages/view" "$DEST/pages/thumb"
-WORK="$WORK" DEST="$DEST" LEAVES="$LEAVES" FULL_W="$FULL_W" python3 - <<'PY'
+WORK="$WORK" DEST="$DEST" LEAVES="$LEAVES" FULL_W="$FULL_W" PDF="$PDF" python3 - <<'PY'
 from PIL import Image
 import glob, os, subprocess, json
 
@@ -91,6 +91,46 @@ for n, im in enumerate(pages, 1):
                        check=True, capture_output=True)
     print(f"  page {n:02d}", flush=True)
 
+# ── live hyperlinks ──────────────────────────────────────────────────────
+# The artwork prints its links blue and underlined, but the real targets live
+# in the PDF as annotations, and rasterising throws them away. Lift the
+# rectangles out so the viewer can lay transparent anchors over the page.
+# Stored as fractions of a leaf, so they hold at any render size, and clipped
+# per leaf so a link crossing the gutter survives the split.
+links = {}
+try:
+    from pypdf import PdfReader
+    reader = PdfReader(os.environ["PDF"])
+    for pi, page in enumerate(reader.pages):
+        box = page.cropbox if page.get("/CropBox") else page.mediabox
+        ox, oy = float(box.left), float(box.bottom)
+        pw, ph = float(box.width), float(box.height)
+        lw = pw / leaves
+        for ref in (page.get("/Annots") or []):
+            try: o = ref.get_object()
+            except Exception: continue
+            if o.get("/Subtype") != "/Link": continue
+            uri = (o.get("/A") or {}).get("/URI")
+            rect = o.get("/Rect")
+            if not uri or not rect or len(rect) != 4: continue
+            r = [float(v) for v in rect]
+            x0, x1 = sorted((r[0] - ox, r[2] - ox))
+            y0, y1 = sorted((r[1] - oy, r[3] - oy))
+            for j in range(leaves):
+                cx0, cx1 = max(x0, j * lw), min(x1, (j + 1) * lw)
+                if cx1 - cx0 <= 0.5: continue          # not on this leaf
+                n = pi * leaves + j + 1
+                links.setdefault(str(n), []).append({
+                    "x": round((cx0 - j * lw) / lw, 5),
+                    "y": round((ph - y1) / ph, 5),     # pdf y is up, css y is down
+                    "w": round((cx1 - cx0) / lw, 5),
+                    "h": round((y1 - y0) / ph, 5),
+                    "href": str(uri),
+                })
+    print(f"→ carried over {sum(len(v) for v in links.values())} hyperlink(s)")
+except ImportError:
+    print("⚠  pypdf not installed — hyperlinks NOT carried over (pip3 install pypdf)")
+
 first = pages[0]
 aspect = round(first.width / first.height, 6)
 pairing = "spreads" if leaves == 2 else "cover"
@@ -100,7 +140,9 @@ open(f"{dest}/book.js", "w").write(
     f"  pages: {len(pages)},\n"
     f"  aspect: {aspect},   /* leaf width / height */\n"
     f"  fullWidth: {full_w},     /* px width of the zoom tier */\n"
-    f'  pairing: "{pairing}"   /* "cover": 1, 2-3 ... N alone | "spreads": 1-2, 3-4 ... */\n'
+    f'  pairing: "{pairing}",   /* "cover": 1, 2-3 ... N alone | "spreads": 1-2, 3-4 ... */\n'
+    "  /* live links lifted from the pdf, as fractions of a leaf */\n"
+    f"  links: {json.dumps(links, indent=2)}\n"
     "};\n")
 
 card = Image.new("RGB", (1200, 630), (14, 14, 14))
