@@ -378,11 +378,15 @@
   document.addEventListener('fullscreenchange', () =>
     fullBtn.setAttribute('aria-pressed', String(!!document.fullscreenElement)));
 
+  /* the delay is a knob at the top of style.css, so it lives in one place */
+  const idleAfter = parseFloat(
+    getComputedStyle(document.documentElement).getPropertyValue('--idle-after')) || 2600;
+
   let idleTimer;
   const wake = () => {
     document.body.classList.remove('idle');
     clearTimeout(idleTimer);
-    idleTimer = setTimeout(() => document.body.classList.add('idle'), 2600);
+    idleTimer = setTimeout(() => document.body.classList.add('idle'), idleAfter);
   };
   ['pointermove', 'pointerdown', 'keydown', 'wheel'].forEach(ev =>
     window.addEventListener(ev, wake, { passive: true }));

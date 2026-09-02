@@ -1,0 +1,87 @@
+/* ═══════════════════════════════════════════════════════════════════
+   kenny vo — shared type and colour. loaded by every page.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Redaction 35, Forest Young & Jeremy Mickel, SIL OFL 1.1.
+   Self-hosted; licence in assets/fonts/LICENSE.txt */
+@font-face{
+  font-family:"Redaction 35";
+  src:url("fonts/redaction-35-400.woff2") format("woff2");
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+
+:root{
+  /* ── ground and ink ───────────────────────────────────────────── */
+  --bg:#fff;
+  --fg:#111;
+  --dim:#6f6f6f;      /* secondary copy */
+  --faint:#9a9a9a;    /* labels */
+  --rule:#dcdcdc;     /* hairline */
+  --rule2:#111;       /* structural rule */
+  --wash:#f2f2f7;     /* reading ground, empty wells */
+
+  /* the two browser-default link colours, each holding one meaning:
+     blue = something you can open, purple = something you have opened */
+  --blue:#0000ee;
+  --purple:#551a8b;
+
+  /* ── families ─────────────────────────────────────────────────────
+     display: Redaction 35, shipped with the site.
+     body:    Plantin MT Pro if the reader has it (Kenny does, via Adobe
+              Fonts), otherwise Times New Roman — which was drawn from
+              Plantin, so the fallback is the original's own descendant.
+     mono:    figures only. tabular by default, so numbers column up.   */
+  --display:"Redaction 35","Times New Roman",Times,serif;
+  --body:"Plantin MT Pro","Plantin MT Pro Light","Times New Roman",Times,
+         "Liberation Serif","Hiragino Mincho ProN","Yu Mincho",serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+
+  /* ── six steps, nothing between them ──────────────────────────────
+     t1  the one large thing on a screen      display
+     t2  book titles, section heads           display
+     t3  prose (body default)                 body
+     t4  secondary links and copy             body
+     t5  figures: folios, counts              mono
+     t6  labels and key hints                 body                     */
+  --t1:30px;
+  --t2:18px;
+  --t3:14px;
+  --t4:12.5px;
+  --t5:11px;
+  --t6:10.5px;
+
+  /* ── spacing, one rhythm ──────────────────────────────────────── */
+  --s1:6px;
+  --s2:12px;
+  --s3:22px;
+  --s4:40px;
+  --s5:72px;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+
+body{
+  background:var(--bg);
+  color:var(--fg);
+  font:var(--t3)/1.5 var(--body);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+a{ color:var(--blue); text-decoration:underline; text-underline-offset:2px;
+   text-decoration-thickness:1px; }
+a:visited{ color:var(--purple); }
+::selection{ background:var(--blue); color:#fff; }
+
+/* the one accent move: invert whatever you are about to open.
+   justify-self keeps the band on the words, not the whole cell. */
+.invert{ justify-self:start; }
+.invert:hover, .invert:focus-visible{
+  background:var(--blue); color:#fff; text-decoration:none; outline:none;
+  padding:0 .16em; margin:0 -.16em;
+  box-decoration-break:clone; -webkit-box-decoration-break:clone;
+}
+
+.mono{ font-family:var(--mono); font-variant-numeric:tabular-nums; }

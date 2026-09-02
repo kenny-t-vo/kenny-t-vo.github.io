@@ -4,171 +4,87 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>kenny vo.</title>
-<meta name="description" content="two books, read as spreads: photography, and selected work.">
+<meta name="description" content="photography, and selected work.">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="kenny vo.">
-<meta property="og:description" content="two books, read as spreads: photography, and selected work.">
+<meta property="og:description" content="photography, and selected work.">
 <meta property="og:image" content="photography/pages/social.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fff'/><rect x='6' y='7' width='9' height='18' fill='%230000ee'/><rect x='17' y='7' width='9' height='18' fill='%230000ee'/></svg>">
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/redaction-35-400.woff2" crossorigin>
+<link rel="stylesheet" href="assets/type.css?v=5">
+<!-- the covers are already warm by the time a book is clicked -->
+<link rel="prefetch" as="image" href="photography/pages/view/01.webp">
+<link rel="prefetch" as="image" href="work/pages/view/01.webp">
 <style>
-:root{
-  --bg:#fff;
-  --fg:#111;
-  --dim:#6f6f6f;
-  --faint:#9a9a9a;
-  --rule:#dcdcdc;
-  --rule2:#111;
-  --wash:#f2f2f7;
+  body{
+    min-height:100svh;
+    display:grid;
+    grid-template-rows:1fr auto;
+    padding:var(--s5) clamp(24px,7vw,80px) var(--s4);
+  }
+  .card{
+    width:min(430px,100%);
+    margin:0 auto;
+    align-self:center;
+  }
 
-  /* blue = a book you can open, purple = one you have opened */
-  --blue:#0000ee;
-  --purple:#551a8b;
+  /* cap height seated on the frame, not the box top:
+     halfLeading + (ascent − capHeight) = .201em for this face at 1.06 */
+  h1{
+    font:400 var(--t1)/1.06 var(--display);
+    letter-spacing:-.012em;
+    margin:-0.201em 0 var(--s4);
+  }
 
-  --serif:"Times New Roman",Times,"Liberation Serif",
-          "Hiragino Mincho ProN","Yu Mincho",serif;
-  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  nav{ display:flex; flex-direction:column; align-items:flex-start; }
+  .book{
+    font:400 var(--t2)/1.35 var(--display);
+    letter-spacing:.004em;
+    padding:var(--s1) 0;
+  }
 
-  --t1:30px;    /* the single large element */
-  --t2:18px;    /* book titles */
-  --t3:14px;    /* prose */
-  --t4:12.5px;  /* secondary copy */
-  --t5:11px;    /* numeric data */
-  --t6:10.5px;  /* labels */
+  .elsewhere{
+    display:flex; flex-direction:column; align-items:flex-start;
+    margin-top:var(--s5);   /* wider than the title gap, so the books group reads as one */
+    font-size:var(--t4);
+    line-height:1.9;
+  }
 
-  --leaf:84px;  /* filmstrip height — not a type step */
-}
+  footer{
+    align-self:end;
+    width:min(430px,100%);
+    margin:0 auto;
+    font-size:var(--t6);
+    letter-spacing:.09em;
+    color:var(--faint);
+  }
 
-*{ box-sizing:border-box; margin:0; padding:0; }
-body{
-  background:var(--bg); color:var(--fg);
-  font:var(--t3)/1.45 var(--serif);
-  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
-  padding:clamp(30px,7vh,72px) clamp(20px,6vw,56px);
-}
-a{ color:var(--blue); text-decoration:underline; text-underline-offset:2px; }
-a:visited{ color:var(--purple); }
-::selection{ background:var(--blue); color:#fff; }
-
-.sheet{ width:min(680px,100%); margin:0 auto; }
-
-/* cap height seated on the top margin, not the box top:
-   offset = halfLeading + (ascent - capHeight) = .201em for Times at 1.06 */
-h1{
-  font-size:var(--t1); font-weight:400; line-height:1.06;
-  letter-spacing:-.018em; margin:-0.201em 0 6px;
-}
-.standfirst{ font-size:var(--t4); color:var(--dim); margin-bottom:clamp(26px,5vh,44px); }
-
-.lbl{
-  display:block; font-size:var(--t6); line-height:1;
-  letter-spacing:.09em; color:var(--faint); margin-bottom:7px;
-}
-
-hr{ border:0; border-top:1px solid var(--rule2); }
-hr.hair{ border-top-color:var(--rule); }
-
-.entry{ padding:15px 0 17px; }
-
-/* both edges are promises: words flush left, figures flush right */
-.line{
-  display:grid; grid-template-columns:1fr auto;
-  align-items:baseline; gap:14px;
-}
-.line + .line{ margin-top:2px; }
-.name{ font-size:var(--t2); line-height:1.2; }
-.desc{ font-size:var(--t4); color:var(--dim); }
-.fig{
-  font:var(--t5)/1.5 var(--mono);
-  font-variant-numeric:tabular-nums; color:var(--dim);
-  white-space:nowrap;
-}
-
-/* the one accent move: invert the book you are about to open */
-/* shrink-wrap the link, or the inversion paints the whole grid cell */
-a.name{ justify-self:start; text-decoration-thickness:1px; }
-a.name:hover, a.name:focus-visible{
-  background:var(--blue); color:#fff;
-  text-decoration:none; outline:none;
-  box-decoration-break:clone; -webkit-box-decoration-break:clone;
-  padding:0 .16em; margin:0 -.16em;
-}
-
-.strip{ display:flex; gap:6px; margin-top:13px; }
-.strip a{
-  display:block; line-height:0;
-  border:1px solid var(--rule); background:var(--wash);
-  height:var(--leaf); aspect-ratio:.77266;
-}
-.strip img{ width:100%; height:100%; object-fit:fill; }
-.strip a:hover, .strip a:focus-visible{ border-color:var(--blue); outline:none; }
-
-footer{ margin-top:clamp(22px,4vh,36px); font-size:var(--t4); color:var(--dim); }
-
-@media (max-width:520px){
-  :root{ --leaf:64px; }
-  .strip{ gap:5px; }
-}
-@media (max-height:560px){
-  body{ padding-top:24px; padding-bottom:24px; }
-  .strip{ display:none; }        /* the least important block goes first */
-}
-@media (prefers-reduced-motion:reduce){ *{ transition:none !important; } }
+  @media (max-height:480px){
+    body{ padding-top:var(--s4); }
+    h1{ margin-bottom:var(--s3); }
+    .elsewhere{ margin-top:var(--s3); }
+  }
 </style>
 </head>
 <body>
-<main class="sheet">
 
-  <h1>kenny vo.</h1>
-  <p class="standfirst">two books, read as spreads.</p>
+  <main class="card">
+    <h1>kenny vo.</h1>
 
-  <span class="lbl">contents.</span>
-  <hr>
-
-  <article class="entry">
-    <div class="line">
-      <a class="name" href="photography/">photography.</a>
-      <span class="fig">32 pages</span>
-    </div>
-    <div class="line">
-      <span class="desc">a photographic archive.</span>
-      <span class="fig">aug 2026</span>
-    </div>
-    <nav class="strip" aria-label="photography, selected pages">
-      <a href="photography/#p9"><img src="photography/pages/thumb/09.webp" alt="page 9" loading="lazy" width="320" height="414"></a>
-      <a href="photography/#p12"><img src="photography/pages/thumb/12.webp" alt="page 12" loading="lazy" width="320" height="414"></a>
-      <a href="photography/#p16"><img src="photography/pages/thumb/16.webp" alt="page 16" loading="lazy" width="320" height="414"></a>
-      <a href="photography/#p21"><img src="photography/pages/thumb/21.webp" alt="page 21" loading="lazy" width="320" height="414"></a>
-      <a href="photography/#p25"><img src="photography/pages/thumb/25.webp" alt="page 25" loading="lazy" width="320" height="414"></a>
-      <a href="photography/#p31"><img src="photography/pages/thumb/31.webp" alt="page 31" loading="lazy" width="320" height="414"></a>
+    <nav aria-label="books">
+      <a class="book invert" href="photography/">photography.</a>
+      <a class="book invert" href="work/">work samples.</a>
     </nav>
-  </article>
 
-  <hr class="hair">
-
-  <article class="entry">
-    <div class="line">
-      <a class="name" href="work/">work samples.</a>
-      <span class="fig">8 spreads</span>
+    <div class="elsewhere">
+      <a class="invert" href="https://www.linkedin.com/in/kenny-t-vo/">linkedin.</a>
+      <a class="invert" href="https://github.com/kenny-t-vo">other projects.</a>
+      <a class="invert" href="mailto:kenny.t.vo@outlook.com">kenny.t.vo@outlook.com</a>
     </div>
-    <div class="line">
-      <span class="desc">exhibitions, objects, and one dome.</span>
-      <span class="fig">aug 2026</span>
-    </div>
-    <nav class="strip" aria-label="work samples, selected pages">
-      <a href="work/#p1"><img src="work/pages/thumb/01.webp" alt="page 1" loading="lazy" width="320" height="414"></a>
-      <a href="work/#p3"><img src="work/pages/thumb/03.webp" alt="page 3" loading="lazy" width="320" height="414"></a>
-      <a href="work/#p5"><img src="work/pages/thumb/05.webp" alt="page 5" loading="lazy" width="320" height="414"></a>
-      <a href="work/#p9"><img src="work/pages/thumb/09.webp" alt="page 9" loading="lazy" width="320" height="414"></a>
-      <a href="work/#p11"><img src="work/pages/thumb/11.webp" alt="page 11" loading="lazy" width="320" height="414"></a>
-      <a href="work/#p13"><img src="work/pages/thumb/13.webp" alt="page 13" loading="lazy" width="320" height="414"></a>
-    </nav>
-  </article>
+  </main>
 
-  <hr class="hair">
+  <footer>2026.</footer>
 
-  <footer><a href="mailto:tsukinomekv@gmail.com">tsukinomekv@gmail.com</a></footer>
-
-</main>
 </body>
 </html>

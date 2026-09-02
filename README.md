@@ -73,14 +73,55 @@ and pairing mode) and its social card. It touches nothing outside the book direc
 so rebuilding one book cannot disturb the other. Any page count works; the pairing
 and the index adapt.
 
+## The knobs
+
+The top of `assets/style.css` is a block of variables, and the gutter — the crease
+down the middle of a spread — is the first of them:
+
+```css
+--gutter-strength: 1;      /* 1 full · .5 half · 0 off */
+--gutter-width: 8.5%;
+```
+
+Each book then sets its own, keyed off `<body data-book="…">`:
+
+```css
+body[data-book="photography"]{ --gutter-strength: .5; }   /* half */
+body[data-book="work"]       { --gutter-strength: 0; }    /* off  */
+```
+
+The work samples were drawn as flat spreads, so a crease down the middle would be
+inventing a fold the artwork never had. The photography book was set as facing pages,
+so it keeps a trace of one. The same block holds the reading ground, the hairline
+around the page, the frame margin, and `--idle-after`, which `app.js` reads back out
+of the CSS so the delay lives in one place.
+
+## Type
+
+| | | |
+|---|---|---|
+| **Redaction 35** | titles, book names, the wordmark | shipped with the site |
+| **Plantin MT Pro** | body and links | falls back to Times New Roman |
+| system monospace | folios and counts | tabular figures, so numbers align |
+
+Redaction 35 (Forest Young and Jeremy Mickel) is under the SIL Open Font License, so
+it is self-hosted in `assets/fonts/` with its licence rather than loaded from a CDN.
+Plantin is an Adobe font and cannot be redistributed; the stack names it first, so it
+appears on any machine that has it — yours, via Adobe Fonts — and everyone else gets
+Times New Roman, which was drawn from Plantin and is its closest living relative.
+
+Sizes come from six steps in `assets/type.css` (`--t1` … `--t6`) and nothing sits
+between them: 30 / 18 / 14 / 12.5 / 11 / 10.5. Spacing runs on one rhythm, `--s1` …
+`--s5`.
+
 ## Editing the viewer
 
-`assets/app.js` and `assets/style.css` are the only copies, shared by both books, so
-a fix lands in both at once. When you change either, bump the `?v=` number on the
-`<script>` and `<link>` tags in **both** `photography/index.html` and
-`work/index.html`. GitHub Pages caches the HTML and the assets for ten minutes
-independently, so without the bump a returning visitor can load the new page against
-the old script. The number is arbitrary; any change to it works.
+`assets/type.css`, `assets/style.css` and `assets/app.js` are the only copies, shared
+by every page, so a fix lands everywhere at once. When you change any of them, bump
+the `?v=` number on the `<link>` and `<script>` tags in **all three** of `index.html`,
+`photography/index.html` and `work/index.html`. GitHub Pages caches the HTML and the
+assets for ten minutes independently, so without the bump a returning visitor can load
+the new page against the old stylesheet. The number is arbitrary; any change works.
 
 The two book shells are otherwise identical apart from their titles and page counts.
 
@@ -96,13 +137,15 @@ DNS record at `kenny-t-vo.github.io`.
 ## Layout
 
 ```
-index.html            the two books, listed
-assets/style.css      shared: dark reading room, chrome that fades when idle
+index.html            the two books, and where else to find you
+assets/type.css       shared: the face, the six sizes, the two link colours
+assets/style.css      shared: the knobs, then the viewer
 assets/app.js         shared: pairing, fit-to-window sizing, zoom lens, index
+assets/fonts/         Redaction 35 + its licence
 photography/
   index.html          book shell
   book.js             generated: leaf count, aspect, pairing mode
   pages/              generated: view / full / thumb WebP tiers
-work/                 the same four, for the other book
+work/                 the same three, for the other book
 build.sh              PDF → one book's page images
 ```
