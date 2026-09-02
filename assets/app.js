@@ -25,10 +25,15 @@
 
   /* ---------- view model: which pages sit side by side ---------- */
 
+  /* Two export shapes reach the viewer. A book of portrait pages opens on a
+     lone cover and pairs 2-3, 4-5 ... A book exported as 2-ups was already
+     spreads before build.sh cut it into leaves, so those pair straight off. */
   const spreads = (() => {
-    const out = [[1]];                          // cover stands alone
-    for (let p = 2; p <= N; p += 2) out.push(p === N ? [p] : [p, p + 1]);
-    return out;                                  // ...and so does a final verso
+    const out = [];
+    let p = 1;
+    if (BOOK.pairing !== 'spreads') { out.push([1]); p = 2; }
+    for (; p <= N; p += 2) out.push(p === N ? [p] : [p, p + 1]);
+    return out;
   })();
   const singles = Array.from({ length: N }, (_, i) => [i + 1]);
 
@@ -201,7 +206,7 @@
       });
       const label = document.createElement('span');
       label.className = 'chip__label';
-      label.textContent = i === 0 ? 'COVER'
+      label.textContent = i === 0 && BOOK.pairing !== 'spreads' ? 'COVER'
         : view.length > 1 ? `${view[0]}–${view[1]}` : String(view[0]);
       chip.append(pages, label);
       chip.addEventListener('click', () => { closeGrid(); goToPage(view[0]); });

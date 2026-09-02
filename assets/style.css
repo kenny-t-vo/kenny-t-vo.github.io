@@ -5,7 +5,7 @@
   --bg-lift: #171717;
   --ink: #f2f0ec;
   --ink-dim: #8d8a85;
-  --accent: #c8102e;
+  --accent: #5f60ec;
   --chrome-pad: clamp(14px, 2.2vw, 26px);
   --stage-pad-x: clamp(18px, 4vw, 76px);
   --stage-pad-y: clamp(56px, 8vh, 92px);
@@ -147,8 +147,11 @@ body.veiled .bar, body.veiled .edge{ opacity: 0 !important; pointer-events: none
   font-size: 14px;
   letter-spacing: .04em;
   color: var(--ink);
+  text-decoration: none;
   opacity: .92;
+  transition: opacity .18s ease;
 }
+.title:hover{ opacity: 1; }
 .title em{
   font-style: italic;
   color: var(--ink-dim);

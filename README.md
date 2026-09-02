@@ -1,28 +1,43 @@
-# kenny vo, photography.
+# kenny vo, books.
 
-Self-hosted photography portfolio as a fit-to-window spread viewer.
+Two self-hosted portfolios as fit-to-window spread viewers, sharing one copy of the
+viewer between them.
 
-**Live:** https://kenny-t-vo.github.io/kennyvophotography/
+| | |
+|---|---|
+| **photography.** | https://kenny-t-vo.github.io/photography/ |
+| **work samples.** | https://kenny-t-vo.github.io/work/ |
 
 ## How it works
 
-The PDF is not sent to the browser. `build.sh` renders every page at 300 dpi and
-derives three WebP tiers:
+The PDFs are not sent to the browser. `build.sh` renders every page and derives
+three WebP tiers per leaf:
 
-| tier | width | used for | total |
-|---|---|---|---|
-| `pages/view/` | 1400 px | the spread you read | 4.7 MB |
-| `pages/full/` | 2600 px | click-to-zoom detail (native 300 dpi) | 19 MB |
-| `pages/thumb/` | 320 px | index grid + blur-up placeholders | 244 KB |
+| tier | width | used for | photography | work |
+|---|---|---|---|---|
+| `pages/view/` | 1400 px | the spread you read | 5.4 MB | 2.9 MB |
+| `pages/full/` | 2600 px | click-to-zoom detail | 23 MB | 10 MB |
+| `pages/thumb/` | 320 px | index grid + blur-up placeholders | 276 KB | 196 KB |
 
-A reader downloads roughly 300 KB per spread instead of the 56 MB PDF. The next and
+A reader downloads roughly 300 KB per spread instead of the whole PDF. The next and
 previous spreads prefetch, so turning a page is instant.
 
-Pages are paired the way the book was set: page 1 alone as the cover, then
-2–3, 4–5 … 30–31, then 32 alone. Images that bleed across the gutter line up,
-because each leaf is sized to an exact half of the spread.
+## Two export shapes
 
-## Reading it
+The books come out of InDesign differently, and `build.sh` detects which is which
+from the page aspect ratio:
+
+- **Portrait pages** (photography, 32 × letter). Paired the way the book was set:
+  page 1 alone as the cover, then 2–3, 4–5 … 30–31, then 32 alone.
+- **Landscape 2-ups** (work samples, 8 × 17″ tall-11″). Already spreads, so each
+  page is cut down the middle into two leaves and paired straight back: 1–2, 3–4 …
+  The cut is lossless, and it is what gives narrow screens one page at a time.
+
+Either way the viewer receives single leaves plus a `pairing` mode in `book.js`, and
+images that bleed across the gutter line up, because each leaf is sized to an exact
+half of the spread.
+
+## Reading them
 
 | | |
 |---|---|
@@ -30,13 +45,13 @@ because each leaf is sized to an exact half of the spread.
 | click a page, or `Z` | zoom the spread at full resolution (drag to pan, scroll to zoom) |
 | `G` | index of all spreads |
 | `F` | fullscreen |
-| `Home` / `End` | cover / back cover |
+| `Home` / `End` | first / last spread |
 | swipe | turn spreads on touch |
 
-Narrow or portrait windows switch to one page at a time. `#p12` in the URL opens at
-that page, so you can link someone straight to a spread.
+Narrow or portrait windows switch to one leaf at a time. `#p12` in the URL opens at
+that leaf, so you can link someone straight to a spread.
 
-## Updating the portfolio
+## Updating a book
 
 The build tools, once:
 
@@ -45,30 +60,35 @@ brew install poppler webp
 pip3 install pillow
 ```
 
-Then for each new edition of the book:
+Then for each new edition, naming the PDF and the book directory:
 
 ```bash
-./build.sh path/to/kennyvophotography.pdf
-git add -A && git commit -m "update portfolio" && git push
+./build.sh "path/to/Photography Portfolio.pdf" photography
+./build.sh "path/to/Work Samples.pdf" work
+git add -A && git commit -m "update books" && git push
 ```
 
-`build.sh` rewrites the page images, `pages/manifest.json`, `assets/book.js`
-(page count and page aspect ratio, read by the viewer) and the social card. Any page
-count works; the pairing and the index adapt.
+`build.sh` rewrites that book's page images, its `book.js` (leaf count, aspect ratio
+and pairing mode) and its social card. It touches nothing outside the book directory,
+so rebuilding one book cannot disturb the other. Any page count works; the pairing
+and the index adapt.
 
 ## Editing the viewer
 
-Bump the `?v=` number on the `<script>` and `<link>` tags in `index.html` whenever
-you change `assets/app.js` or `assets/style.css`. GitHub Pages caches the HTML and
-the assets for ten minutes independently, so without the bump a returning visitor
-can load the new page against the old script. The number is arbitrary; any change
-to it works.
+`assets/app.js` and `assets/style.css` are the only copies, shared by both books, so
+a fix lands in both at once. When you change either, bump the `?v=` number on the
+`<script>` and `<link>` tags in **both** `photography/index.html` and
+`work/index.html`. GitHub Pages caches the HTML and the assets for ten minutes
+independently, so without the bump a returning visitor can load the new page against
+the old script. The number is arbitrary; any change to it works.
+
+The two book shells are otherwise identical apart from their titles and page counts.
 
 ## Deploying
 
-GitHub Pages serves the repo root as-is. In **Settings → Pages**, set
-*Source: Deploy from a branch*, *Branch: `main` / `(root)`*. The `.nojekyll` file
-keeps Jekyll from touching the asset folders.
+This is the user site repo, so GitHub Pages serves the root of `main` at
+`kenny-t-vo.github.io`. The `.nojekyll` file keeps Jekyll from touching the asset
+folders.
 
 For a custom domain, add a `CNAME` file containing the domain and point a `CNAME`
 DNS record at `kenny-t-vo.github.io`.
@@ -76,10 +96,13 @@ DNS record at `kenny-t-vo.github.io`.
 ## Layout
 
 ```
-index.html          viewer shell
-assets/style.css    dark reading room, chrome that fades when idle
-assets/app.js       pairing, fit-to-window sizing, zoom lens, index
-assets/book.js      generated: page count + aspect ratio
-pages/              generated: view / full / thumb WebP tiers
-build.sh            PDF → page images
+index.html            the two books, listed
+assets/style.css      shared: dark reading room, chrome that fades when idle
+assets/app.js         shared: pairing, fit-to-window sizing, zoom lens, index
+photography/
+  index.html          book shell
+  book.js             generated: leaf count, aspect, pairing mode
+  pages/              generated: view / full / thumb WebP tiers
+work/                 the same four, for the other book
+build.sh              PDF → one book's page images
 ```
