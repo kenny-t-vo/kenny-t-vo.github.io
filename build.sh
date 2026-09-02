@@ -1,22 +1,53 @@
 #!/usr/bin/env bash
-# Render a PDF into the page tiers one book needs.
-#   ./build.sh path/to/book.pdf <book-dir>
+# Render a PDF into the pages one document needs.
+#   ./build.sh path/to/book.pdf <dir>
 # e.g. ./build.sh "~/portfolio.pdf" photography
+#      ./build.sh "~/cv.pdf" cv
 #
-# Handles both export shapes:
+# Books (photography, work) get three lossy tiers and handle both export shapes:
 #   portrait pages  -> paired as cover, 2-3, 4-5 ... last alone
 #   landscape 2-ups -> already spreads; split into leaves, paired 1-2, 3-4 ...
+#
+# The cv is different and gets its own path: one lossless tier, because it is
+# type rather than photographs, and lossless is both crisper and smaller there.
+# It has no zoom and no index, so it needs no other tier.
 #
 # Requires: poppler (pdftoppm), webp (cwebp), python3 with Pillow.
 #   brew install poppler webp && pip3 install pillow
 set -euo pipefail
 
-PDF="${1:?usage: ./build.sh path/to/book.pdf <book-dir>}"
-BOOK="${2:?usage: ./build.sh path/to/book.pdf <book-dir>}"
+PDF="${1:?usage: ./build.sh path/to/document.pdf <dir>}"
+BOOK="${2:?usage: ./build.sh path/to/document.pdf <dir>}"
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 DEST="$ROOT/$BOOK"
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
+
+# ── the cv: one lossless tier, plus the pdf itself for download ──────────────
+if [ "$BOOK" = "cv" ]; then
+  CV_W=2000
+  echo "→ cv: rendering at ${CV_W}px wide, lossless"
+  mkdir -p "$DEST/pages"
+  rm -f "$DEST/pages"/*.webp
+  pdftoppm -png -scale-to-x "$CV_W" -scale-to-y -1 "$PDF" "$WORK/p"
+  n=0
+  for f in "$WORK"/p-*.png; do
+    n=$((n + 1))
+    cwebp -quiet -lossless -m 6 -metadata none "$f" -o "$DEST/pages/$n.webp"
+    echo "  page $n"
+  done
+  cp "$PDF" "$DEST/Vo_Kenny_CV.pdf"
+  echo "→ copied the pdf itself for the download link"
+
+  # cv/index.html lists its pages by hand; say so if the count no longer matches
+  TAGS=$(grep -c '<img src="pages/' "$DEST/index.html" || true)
+  if [ "$n" -ne "$TAGS" ]; then
+    echo "⚠  $n pages rendered but cv/index.html has $TAGS <img> tags."
+    echo "   Edit cv/index.html so the two match, or the extra pages will not show."
+  fi
+  du -sh "$DEST/pages"
+  exit 0
+fi
 
 FULL_W=2600   # px per leaf in the zoom tier; the master renders straight to it
 

@@ -68,8 +68,15 @@ build on top of a stale clone cannot be pushed:
 git pull --rebase
 ./build.sh "path/to/Photography Portfolio.pdf" photography
 ./build.sh "path/to/Work Samples.pdf" work
+./build.sh "path/to/CV.pdf" cv
 git add -A && git commit -m "update books" && git push
 ```
+
+The last argument names the directory and decides everything else. `photography`
+and `work` get the three lossy tiers; `cv` takes a different path — one lossless
+tier, since it is type rather than photographs, plus a copy of the PDF itself for
+the download link. If the CV ever stops being two pages, `build.sh` will say so:
+`cv/index.html` lists its pages by hand and would need a matching number of tags.
 
 `build.sh` rewrites that book's page images, its `book.js` (leaf count, aspect ratio
 and pairing mode) and its social card. It touches nothing outside the book directory,
