@@ -1,0 +1,376 @@
+/* Kenny Vo — photographic archive
+   Spread viewer: fit-to-window facing pages, keyboard/swipe navigation,
+   full-resolution zoom lens, and a spread index. No dependencies. */
+
+(() => {
+  const BOOK = window.BOOK || { pages: 32, aspect: 612 / 792 };
+  const N = BOOK.pages;
+  const AR = BOOK.aspect;                       // single page width / height
+  const pad = n => String(n).padStart(2, '0');
+  const url = (tier, n) => `pages/${tier}/${pad(n)}.webp`;
+
+  const stage   = document.getElementById('stage');
+  const book    = document.getElementById('book');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+  const folioEl = document.getElementById('folio');
+  const totalEl = document.getElementById('total');
+  const gridEl  = document.getElementById('grid');
+  const gridIn  = document.getElementById('grid-inner');
+  const lensEl  = document.getElementById('lens');
+  const lensImg = document.getElementById('lens-img');
+  const lensFr  = document.getElementById('lens-frame');
+
+  totalEl.textContent = N;
+
+  /* ---------- view model: which pages sit side by side ---------- */
+
+  const spreads = (() => {
+    const out = [[1]];                          // cover stands alone
+    for (let p = 2; p <= N; p += 2) out.push(p === N ? [p] : [p, p + 1]);
+    return out;                                  // ...and so does a final verso
+  })();
+  const singles = Array.from({ length: N }, (_, i) => [i + 1]);
+
+  const wantsSpreads = () =>
+    window.innerWidth >= 640 && window.innerWidth / window.innerHeight >= 1.1;
+
+  let views = wantsSpreads() ? spreads : singles;
+  let page  = 1;                                 // anchor page, source of truth
+  let idx   = 0;                                 // index into `views`
+
+  const findView = p => views.findIndex(v => v.includes(p));
+
+  /* ---------- rendering ---------- */
+
+  const cache = new Map();
+  function preload(tier, n) {
+    const key = tier + n;
+    if (cache.has(key) || n < 1 || n > N) return;
+    const img = new Image();
+    img.src = url(tier, n);
+    cache.set(key, img);
+  }
+
+  function render() {
+    const view = views[idx];
+    book.dataset.leaves = view.length;
+    book.classList.toggle('zoomable', true);
+    book.replaceChildren(...view.map(n => {
+      const leaf = document.createElement('div');
+      leaf.className = 'leaf';
+      leaf.style.backgroundImage = `url(${url('thumb', n)})`;
+      leaf.dataset.page = n;
+      const img = new Image();
+      img.alt = `Page ${n}`;
+      img.decoding = 'async';
+      img.src = url('view', n);
+      const show = () => img.classList.add('ready');
+      img.complete ? show() : img.addEventListener('load', show, { once: true });
+      leaf.append(img);
+      return leaf;
+    }));
+
+    layout();
+    folioEl.textContent = view.length > 1 ? `${view[0]}–${view[1]}` : view[0];
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === views.length - 1;
+    history.replaceState(null, '', `#p${view[0]}`);
+
+    for (const off of [1, -1, 2]) {
+      const v = views[idx + off];
+      if (v) v.forEach(n => preload('view', n));
+    }
+    if (gridIn.childElementCount) markCurrentChip();
+  }
+
+  function layout() {
+    const cs = getComputedStyle(stage);
+    const availW = stage.clientWidth  - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const availH = stage.clientHeight - parseFloat(cs.paddingTop)  - parseFloat(cs.paddingBottom);
+    const leaves = views[idx].length;
+    const ar = leaves * AR;
+
+    let w = availW, h = w / ar;
+    if (h > availH) { h = availH; w = h * ar; }
+    w = Math.max(2, Math.round(w / leaves) * leaves);   // even split, no seam
+    h = Math.round(w / ar);
+
+    book.style.width  = w + 'px';
+    book.style.height = h + 'px';
+  }
+
+  /* ---------- navigation ---------- */
+
+  function goToView(i, anchor) {
+    idx = Math.max(0, Math.min(views.length - 1, i));
+    page = anchor ?? views[idx][0];
+    render();
+  }
+  function goToPage(p) {
+    page = Math.max(1, Math.min(N, p));
+    idx = findView(page);
+    render();
+  }
+  const step = d => goToView(idx + d);
+
+  prevBtn.addEventListener('click', () => step(-1));
+  nextBtn.addEventListener('click', () => step(1));
+
+  /* re-pair pages when the window shape changes */
+  let lastMode = views === spreads;
+  function onResize() {
+    const mode = wantsSpreads();
+    if (mode !== lastMode) {
+      lastMode = mode;
+      views = mode ? spreads : singles;
+      idx = findView(page);
+      render();
+    } else {
+      layout();
+    }
+  }
+  window.addEventListener('resize', onResize);
+  window.addEventListener('orientationchange', () => setTimeout(onResize, 120));
+
+  /* ---------- keyboard ---------- */
+
+  document.addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const inLens = !lensEl.hidden;
+    const inGrid = !gridEl.hidden;
+
+    switch (e.key) {
+      case 'ArrowRight': case 'PageDown': case ' ':
+        e.preventDefault();
+        inLens ? lensGo(1) : step(1); break;
+      case 'ArrowLeft': case 'PageUp':
+        e.preventDefault();
+        inLens ? lensGo(-1) : step(-1); break;
+      case 'Home': e.preventDefault(); inLens ? openLens(1) : goToView(0); break;
+      case 'End':  e.preventDefault(); inLens ? openLens(N) : goToView(views.length - 1); break;
+      case 'Escape': if (inLens) closeLens(); else if (inGrid) closeGrid(); break;
+      case 'g': case 'G': inGrid ? closeGrid() : openGrid(); break;
+      case 'z': case 'Z': inLens ? closeLens() : openLens(views[idx][0]); break;
+      case 'f': case 'F': toggleFullscreen(); break;
+    }
+  });
+
+  /* ---------- pointer: swipe to turn, click to zoom ---------- */
+
+  let down = null;
+  stage.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    down = { x: e.clientX, y: e.clientY, t: Date.now(), target: e.target };
+  });
+  stage.addEventListener('pointerup', e => {
+    if (!down) return;
+    const dx = e.clientX - down.x, dy = e.clientY - down.y;
+    const moved = Math.hypot(dx, dy);
+    const leaf = down.target.closest?.('.leaf');
+    if (moved > 44 && Math.abs(dx) > Math.abs(dy) * 1.4) {
+      step(dx < 0 ? 1 : -1);
+    } else if (moved < 10 && leaf && Date.now() - down.t < 600) {
+      openLens(Number(leaf.dataset.page));
+    }
+    down = null;
+  });
+  stage.addEventListener('pointercancel', () => { down = null; });
+
+  /* ---------- index overlay ---------- */
+
+  const gridBtn = document.getElementById('grid-btn');
+  gridBtn.addEventListener('click', () => (gridEl.hidden ? openGrid() : closeGrid()));
+
+  function buildGrid() {
+    gridIn.style.setProperty('--chip-ar', String(2 * AR));
+    gridIn.replaceChildren(...spreads.map((view, i) => {
+      const chip = document.createElement('button');
+      chip.className = 'chip';
+      chip.dataset.view = i;
+      const pages = document.createElement('div');
+      pages.className = 'chip__pages';
+      view.forEach(n => {
+        const im = new Image();
+        im.src = url('thumb', n);
+        im.alt = `Page ${n}`;
+        im.loading = 'lazy';
+        pages.append(im);
+      });
+      const label = document.createElement('span');
+      label.className = 'chip__label';
+      label.textContent = i === 0 ? 'COVER'
+        : view.length > 1 ? `${view[0]}–${view[1]}` : String(view[0]);
+      chip.append(pages, label);
+      chip.addEventListener('click', () => { closeGrid(); goToPage(view[0]); });
+      return chip;
+    }));
+  }
+  function markCurrentChip() {
+    const here = views[idx][0];
+    gridIn.querySelectorAll('.chip').forEach((c, i) =>
+      c.setAttribute('aria-current', String(spreads[i].includes(here))));
+  }
+  function openGrid() {
+    if (!gridIn.childElementCount) buildGrid();
+    markCurrentChip();
+    gridEl.hidden = false;
+    document.body.classList.add('veiled');
+    gridBtn.setAttribute('aria-pressed', 'true');
+    gridIn.querySelector('[aria-current="true"]')?.scrollIntoView({ block: 'center' });
+  }
+  function closeGrid() {
+    gridEl.hidden = true;
+    document.body.classList.remove('veiled');
+    gridBtn.setAttribute('aria-pressed', 'false');
+  }
+
+  /* ---------- zoom lens ---------- */
+
+  let lensPage = 1, scale = 1, fitScale = 1, tx = 0, ty = 0, nat = { w: 1, h: 1 };
+  const pointers = new Map();
+  let pinch = null;
+
+  document.getElementById('zoom-btn')
+    .addEventListener('click', () => (lensEl.hidden ? openLens(views[idx][0]) : closeLens()));
+
+  function openLens(n) {
+    lensPage = Math.max(1, Math.min(N, n));
+    lensEl.hidden = false;
+    document.body.classList.add('veiled');
+    lensImg.classList.remove('ready');
+    lensImg.alt = `Page ${lensPage}, full resolution`;
+    lensImg.src = url('full', lensPage);
+    const ready = () => { nat = { w: lensImg.naturalWidth, h: lensImg.naturalHeight }; fit(); };
+    lensImg.complete && lensImg.naturalWidth ? ready()
+      : lensImg.addEventListener('load', ready, { once: true });
+    [lensPage - 1, lensPage + 1].forEach(p => preload('full', p));
+  }
+  function closeLens() {
+    lensEl.hidden = true;
+    document.body.classList.remove('veiled');
+    if (!views[idx].includes(lensPage)) goToPage(lensPage);
+  }
+  function lensGo(d) {
+    openLens(lensPage + d);
+  }
+
+  function frameBox() {
+    return { w: lensFr.clientWidth, h: lensFr.clientHeight };
+  }
+  function fit() {
+    const f = frameBox();
+    const m = window.innerWidth < 700 ? 8 : 40;
+    fitScale = Math.min((f.w - m * 2) / nat.w, (f.h - m * 2) / nat.h);
+    scale = fitScale;
+    tx = (f.w - nat.w * scale) / 2;
+    ty = (f.h - nat.h * scale) / 2;
+    apply();
+  }
+  function clampPan() {
+    const f = frameBox();
+    const w = nat.w * scale, h = nat.h * scale;
+    tx = w <= f.w ? (f.w - w) / 2 : Math.min(0, Math.max(f.w - w, tx));
+    ty = h <= f.h ? (f.h - h) / 2 : Math.min(0, Math.max(f.h - h, ty));
+  }
+  function apply() {
+    clampPan();
+    lensImg.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`;
+    lensImg.style.width = nat.w + 'px';
+    lensImg.style.height = nat.h + 'px';
+  }
+  function zoomAt(cx, cy, next) {
+    const maxS = Math.max(fitScale * 4, 1);
+    next = Math.max(fitScale, Math.min(maxS, next));
+    const k = next / scale;
+    tx = cx - (cx - tx) * k;
+    ty = cy - (cy - ty) * k;
+    scale = next;
+    apply();
+  }
+
+  lensFr.addEventListener('wheel', e => {
+    e.preventDefault();
+    const r = lensFr.getBoundingClientRect();
+    zoomAt(e.clientX - r.left, e.clientY - r.top, scale * Math.exp(-e.deltaY * 0.0022));
+  }, { passive: false });
+
+  lensFr.addEventListener('dblclick', e => {
+    const r = lensFr.getBoundingClientRect();
+    zoomAt(e.clientX - r.left, e.clientY - r.top,
+           scale > fitScale * 1.05 ? fitScale : Math.max(1, fitScale * 2.5));
+  });
+
+  lensFr.addEventListener('pointerdown', e => {
+    lensFr.setPointerCapture(e.pointerId);
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    lensFr.classList.add('dragging');
+    if (pointers.size === 2) {
+      const [a, b] = [...pointers.values()];
+      pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), s: scale };
+    }
+  });
+  lensFr.addEventListener('pointermove', e => {
+    const p = pointers.get(e.pointerId);
+    if (!p) return;
+    const dx = e.clientX - p.x, dy = e.clientY - p.y;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (pointers.size === 2 && pinch) {
+      const [a, b] = [...pointers.values()];
+      const d = Math.hypot(a.x - b.x, a.y - b.y);
+      const r = lensFr.getBoundingClientRect();
+      zoomAt((a.x + b.x) / 2 - r.left, (a.y + b.y) / 2 - r.top, pinch.s * (d / pinch.d));
+    } else if (pointers.size === 1) {
+      tx += dx; ty += dy; apply();
+    }
+  });
+  const endPointer = e => {
+    pointers.delete(e.pointerId);
+    if (pointers.size < 2) pinch = null;
+    if (!pointers.size) lensFr.classList.remove('dragging');
+  };
+  lensFr.addEventListener('pointerup', endPointer);
+  lensFr.addEventListener('pointercancel', endPointer);
+
+  window.addEventListener('resize', () => { if (!lensEl.hidden) fit(); });
+
+  document.querySelectorAll('[data-close]').forEach(b =>
+    b.addEventListener('click', () => (lensEl.hidden ? closeGrid() : closeLens())));
+  gridEl.addEventListener('click', e => { if (e.target === gridEl) closeGrid(); });
+
+  /* ---------- fullscreen + idle chrome ---------- */
+
+  const fullBtn = document.getElementById('full-btn');
+  function toggleFullscreen() {
+    document.fullscreenElement ? document.exitFullscreen()
+      : document.documentElement.requestFullscreen?.().catch(() => {});
+  }
+  fullBtn.addEventListener('click', toggleFullscreen);
+  document.addEventListener('fullscreenchange', () =>
+    fullBtn.setAttribute('aria-pressed', String(!!document.fullscreenElement)));
+
+  let idleTimer;
+  const wake = () => {
+    document.body.classList.remove('idle');
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => document.body.classList.add('idle'), 2600);
+  };
+  ['pointermove', 'pointerdown', 'keydown', 'wheel'].forEach(ev =>
+    window.addEventListener(ev, wake, { passive: true }));
+  wake();
+
+  /* ---------- boot ---------- */
+
+  const fromHash = () => {
+    const m = location.hash.match(/p?(\d+)/);
+    return m ? Math.max(1, Math.min(N, Number(m[1]))) : 1;
+  };
+  page = fromHash();
+  idx = findView(page);
+  render();
+  window.addEventListener('hashchange', () => {
+    const p = fromHash();
+    if (!views[idx].includes(p)) goToPage(p);
+  });
+})();
