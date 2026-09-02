@@ -18,7 +18,7 @@
   const gridEl  = document.getElementById('grid');
   const gridIn  = document.getElementById('grid-inner');
   const lensEl  = document.getElementById('lens');
-  const lensImg = document.getElementById('lens-img');
+  const lensSheet = document.getElementById('lens-sheet');
   const lensFr  = document.getElementById('lens-frame');
 
   totalEl.textContent = N;
@@ -126,6 +126,7 @@
       views = mode ? spreads : singles;
       idx = findView(page);
       render();
+      if (!lensEl.hidden) openLens(idx);
     } else {
       layout();
     }
@@ -147,11 +148,12 @@
       case 'ArrowLeft': case 'PageUp':
         e.preventDefault();
         inLens ? lensGo(-1) : step(-1); break;
-      case 'Home': e.preventDefault(); inLens ? openLens(1) : goToView(0); break;
-      case 'End':  e.preventDefault(); inLens ? openLens(N) : goToView(views.length - 1); break;
+      case 'Home': e.preventDefault(); inLens ? openLens(0) : goToView(0); break;
+      case 'End':  e.preventDefault();
+        inLens ? openLens(views.length - 1) : goToView(views.length - 1); break;
       case 'Escape': if (inLens) closeLens(); else if (inGrid) closeGrid(); break;
       case 'g': case 'G': inGrid ? closeGrid() : openGrid(); break;
-      case 'z': case 'Z': inLens ? closeLens() : openLens(views[idx][0]); break;
+      case 'z': case 'Z': inLens ? closeLens() : openLens(idx); break;
       case 'f': case 'F': toggleFullscreen(); break;
     }
   });
@@ -171,7 +173,7 @@
     if (moved > 44 && Math.abs(dx) > Math.abs(dy) * 1.4) {
       step(dx < 0 ? 1 : -1);
     } else if (moved < 10 && leaf && Date.now() - down.t < 600) {
-      openLens(Number(leaf.dataset.page));
+      openLens(idx);
     }
     down = null;
   });
@@ -227,32 +229,55 @@
 
   /* ---------- zoom lens ---------- */
 
-  let lensPage = 1, scale = 1, fitScale = 1, tx = 0, ty = 0, nat = { w: 1, h: 1 };
+  let lensIdx = 0, scale = 1, fitScale = 1, tx = 0, ty = 0, nat = { w: 1, h: 1 };
   const pointers = new Map();
   let pinch = null;
 
   document.getElementById('zoom-btn')
-    .addEventListener('click', () => (lensEl.hidden ? openLens(views[idx][0]) : closeLens()));
+    .addEventListener('click', () => (lensEl.hidden ? openLens(idx) : closeLens()));
 
-  function openLens(n) {
-    lensPage = Math.max(1, Math.min(N, n));
+  /* The lens holds the whole spread, not one leaf, so a photograph running
+     across the gutter stays whole while you pan around it. Page size is known
+     up front, so the sheet is laid out and fitted before anything loads. */
+  function openLens(i) {
+    lensIdx = Math.max(0, Math.min(views.length - 1, i));
+    const view = views[lensIdx];
+    const pw = BOOK.fullWidth || 2600;
+    const ph = Math.round(pw / AR);
+    nat = { w: pw * view.length, h: ph };
+
+    lensSheet.dataset.leaves = view.length;
+    lensSheet.style.width  = nat.w + 'px';
+    lensSheet.style.height = nat.h + 'px';
+    lensSheet.replaceChildren(...view.map(n => {
+      const pg = document.createElement('div');
+      pg.className = 'lens__page';
+      pg.style.width  = pw + 'px';
+      pg.style.height = ph + 'px';
+      pg.style.backgroundImage = `url(${url('view', n)})`;   // already cached: no blank frame
+      const img = new Image();
+      img.alt = `Page ${n}, full resolution`;
+      img.decoding = 'async';
+      img.draggable = false;
+      img.src = url('full', n);
+      const show = () => img.classList.add('ready');
+      img.complete ? show() : img.addEventListener('load', show, { once: true });
+      pg.append(img);
+      return pg;
+    }));
+
     lensEl.hidden = false;
     document.body.classList.add('veiled');
-    lensImg.classList.remove('ready');
-    lensImg.alt = `Page ${lensPage}, full resolution`;
-    lensImg.src = url('full', lensPage);
-    const ready = () => { nat = { w: lensImg.naturalWidth, h: lensImg.naturalHeight }; fit(); };
-    lensImg.complete && lensImg.naturalWidth ? ready()
-      : lensImg.addEventListener('load', ready, { once: true });
-    [lensPage - 1, lensPage + 1].forEach(p => preload('full', p));
+    fit();
+    (views[lensIdx + 1] || []).forEach(n => preload('full', n));
   }
   function closeLens() {
     lensEl.hidden = true;
     document.body.classList.remove('veiled');
-    if (!views[idx].includes(lensPage)) goToPage(lensPage);
+    if (lensIdx !== idx) goToView(lensIdx);
   }
   function lensGo(d) {
-    openLens(lensPage + d);
+    openLens(lensIdx + d);
   }
 
   function frameBox() {
@@ -275,9 +300,7 @@
   }
   function apply() {
     clampPan();
-    lensImg.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`;
-    lensImg.style.width = nat.w + 'px';
-    lensImg.style.height = nat.h + 'px';
+    lensSheet.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`;
   }
   function zoomAt(cx, cy, next) {
     const maxS = Math.max(fitScale * 4, 1);

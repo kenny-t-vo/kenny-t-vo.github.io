@@ -29,7 +29,7 @@ exactly, because each leaf is sized to an exact half of the spread.
 | | |
 |---|---|
 | `←` `→` `space` | turn spreads |
-| click a page, or `Z` | full-resolution zoom — drag to pan, scroll to zoom |
+| click a page, or `Z` | zoom the spread at full resolution — drag to pan, scroll to zoom |
 | `G` | index of all spreads |
 | `F` | fullscreen |
 | `Home` / `End` | cover / back cover |
