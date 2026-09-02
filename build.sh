@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Render a PDF into the pages one document needs.
+# Render a PDF into the page tiers a document needs.
 #   ./build.sh path/to/book.pdf <dir>
 # e.g. ./build.sh "~/portfolio.pdf" photography
 #      ./build.sh "~/cv.pdf" cv
@@ -8,9 +8,8 @@
 #   portrait pages  -> paired as cover, 2-3, 4-5 ... last alone
 #   landscape 2-ups -> already spreads; split into leaves, paired 1-2, 3-4 ...
 #
-# The cv is different and gets its own path: one lossless tier, because it is
-# type rather than photographs, and lossless is both crisper and smaller there.
-# It has no zoom and no index, so it needs no other tier.
+# The cv takes its own path: one lossless tier. For type, lossless is crisper
+# and smaller than lossy. No zoom or index, so no other tier is needed.
 #
 # Requires: poppler (pdftoppm), webp (cwebp), python3 with Pillow.
 #   brew install poppler webp && pip3 install pillow
@@ -39,10 +38,8 @@ if [ "$BOOK" = "cv" ]; then
   cp "$PDF" "$DEST/Vo_Kenny_CV.pdf"
   echo "→ copied the pdf itself for the download link"
 
-  # the cv page builds itself from this, so both its page count and its links
-  # follow the pdf with no hand editing
-  # aspect comes from the pdf's own page box: this Pillow has no webp decoder,
-  # and the pdf is the more authoritative source anyway
+  # page count and links come from the pdf, so pages.js needs no hand editing.
+  # aspect reads from the pdf page box: this Pillow has no webp decoder.
   read -r CV_PTS_W CV_PTS_H < <(pdfinfo "$PDF" | awk '/^Page size:/ {print $3, $5}')
   PYTHONPATH="$ROOT" DEST="$DEST" PDF="$PDF" PAGES="$n" \
     PTS_W="$CV_PTS_W" PTS_H="$CV_PTS_H" python3 - <<'CVPY'
@@ -64,7 +61,7 @@ open(f"{dest}/pages.js", "w").write(
     "window.CV = {\n"
     f"  pages: {pages},\n"
     f"  aspect: {aspect},   /* page width / height */\n"
-    "  /* live links lifted from the pdf, as fractions of a page */\n"
+    "  /* link rects, as fractions of a page */\n"
     f"  links: {json.dumps(links, indent=2)}\n"
     "};\n")
 CVPY
@@ -88,14 +85,14 @@ import glob, os, subprocess, json
 
 work, dest = os.environ["WORK"], os.environ["DEST"]
 leaves, full_w = int(os.environ["LEAVES"]), int(os.environ["FULL_W"])
-TIERS = [("full", full_w, 88),   # click-to-zoom detail
-         ("view", 1400, 88),     # what the spread shows
-         ("thumb", 320, 80)]     # index grid + blur-up placeholder
+TIERS = [("full", full_w, 88),   # click-to-zoom
+         ("view", 1400, 88),     # spread
+         ("thumb", 320, 80)]     # index grid, blur-up placeholder
 
 masters = sorted(glob.glob(f"{work}/m-*.png"))
 
-# a landscape export is already a spread: cut it back into leaves so the
-# viewer can pair them itself, and so narrow screens get one page at a time
+# landscape exports are already spreads; split into leaves so the viewer can
+# pair them and narrow screens can show one page at a time
 pages = []
 for f in masters:
     im = Image.open(f).convert("RGB")
@@ -115,7 +112,6 @@ for n, im in enumerate(pages, 1):
     print(f"  page {n:02d}", flush=True)
 
 # ── live hyperlinks ────────────────────────────────────────────────
-# Lifted from the pdf so the printed links stay clickable once rasterised.
 links = {}
 try:
     import linkmap
@@ -134,7 +130,7 @@ open(f"{dest}/book.js", "w").write(
     f"  aspect: {aspect},   /* leaf width / height */\n"
     f"  fullWidth: {full_w},     /* px width of the zoom tier */\n"
     f'  pairing: "{pairing}",   /* "cover": 1, 2-3 ... N alone | "spreads": 1-2, 3-4 ... */\n'
-    "  /* live links lifted from the pdf, as fractions of a leaf */\n"
+    "  /* link rects, as fractions of a leaf */\n"
     f"  links: {json.dumps(links, indent=2)}\n"
     "};\n")
 

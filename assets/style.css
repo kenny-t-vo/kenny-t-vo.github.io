@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════════
-   THE KNOBS — everything you are likely to want to change is here.
-   Requires assets/type.css, which is loaded first and holds the
-   colour, family and size tokens.
+   THE KNOBS — tunable values.
+   Requires assets/type.css, loaded first, which holds the colour,
+   family and size tokens.
    ═══════════════════════════════════════════════════════════════════ */
 
 :root{
@@ -13,13 +13,13 @@
   --gutter-width:8.5%;        /* how far the crease spreads         */
 
   /* ── the reading surface ───────────────────────────────────────── */
-  --reading-ground:var(--bg);     /* what the pages sit on: pure white */
+  --reading-ground:var(--bg);     /* pure white */
   --page-edge:var(--rule);        /* hairline around the spread     */
   --frame:clamp(16px,3.4vw,34px); /* margin from viewport to chrome */
 
   /* ── behaviour ─────────────────────────────────────────────────── */
   --idle-after:2600ms;        /* chrome fades after this (in app.js) */
-  --fade:150ms;               /* the only motion in the interface    */
+  --fade:150ms;               /* the only transition duration used */
 }
 
 /* per book. the viewer reads these from <body data-book="…">. */
@@ -50,7 +50,7 @@ body{
   position:relative;
   display:flex;
   background:var(--bg);
-  box-shadow:0 0 0 1px var(--page-edge);   /* a hairline, not a shadow */
+  box-shadow:0 0 0 1px var(--page-edge);   /* hairline */
 }
 
 .leaf{
@@ -71,9 +71,8 @@ body{
 
 .book.zoomable .leaf{ cursor:zoom-in; }
 
-/* The page prints its links blue and underlined; these are the live targets,
-   invisible until hovered. ::after widens the tap area without moving the box —
-   kept small, because some of these sit only a few points apart. */
+/* invisible link overlays. ::after widens the tap area without moving the
+   box; kept small because some links sit a few points apart. */
 .pin{
   position:absolute;
   display:block;
@@ -86,7 +85,7 @@ body{
 .pin:hover{ background:rgba(0,0,238,.10); }
 .pin:focus-visible{ outline:1px solid var(--blue); outline-offset:1px; }
 
-/* the crease. scaled by --gutter-strength, so 0 removes it entirely. */
+/* the crease; --gutter-strength 0 removes it */
 .book[data-leaves="2"]::after{
   content:"";
   position:absolute; top:0; bottom:0; left:50%;
@@ -145,8 +144,7 @@ body.idle .edge{ opacity:0; }
 body.idle .bar{ opacity:0; }
 body.veiled .bar, body.veiled .edge{ opacity:0 !important; pointer-events:none; }
 
-/* chrome is interface, not content: it never takes the visited colour.
-   purple stays reserved for documents you have actually read. */
+/* chrome never takes the visited colour; purple is reserved for documents */
 .wordmark{ font:400 var(--t2)/1 var(--display); letter-spacing:.004em; }
 .wordmark:visited, .tool:visited, .overlay__close:visited{ color:var(--blue); }
 .here{ font:400 var(--t2)/1 var(--display); color:var(--dim); letter-spacing:.004em; }
@@ -224,7 +222,7 @@ body.veiled .bar, body.veiled .edge{ opacity:0 !important; pointer-events:none; 
 .chip:hover .chip__label{ color:var(--blue); }
 .chip[aria-current="true"] .chip__label{
   background:var(--blue); color:#fff;
-  box-shadow:0 0 0 .34em var(--blue);   /* no padding: nothing reflows */
+  box-shadow:0 0 0 .34em var(--blue);   /* no padding, so nothing reflows */
 }
 
 /* zoom */
@@ -266,13 +264,12 @@ body.veiled .bar, body.veiled .edge{ opacity:0 !important; pointer-events:none; 
     rgba(0,0,0,calc(.055 * var(--gutter-strength))) 58%,
     rgba(0,0,0,0) 100%);
 }
-/* Phones get one leaf at a time, and nothing on screen says the spread is a
-   rotation away. Said once, quietly, under the page — never on a desktop, and
-   never again once the reader has actually seen a spread. */
+/* phones show one leaf, and nothing else hints that rotating gives a spread.
+   shown once; never on desktop, never again after a spread is seen. */
 .rotate-hint{
   position:fixed;
   left:0; right:0;
-  bottom:calc(var(--frame) + 3.4em);   /* clears the chrome's box, not just its ink */
+  bottom:calc(var(--frame) + 3.4em);   /* clears the chrome's full box */
   text-align:center;
   font:var(--t6)/1 var(--body);
   letter-spacing:.09em;
@@ -307,7 +304,7 @@ body.idle .lens__hint{ opacity:0; }
   .stage{ padding:calc(var(--frame) * 3) var(--frame); }
   .edge{ width:30vw; }
   .grid__inner{ grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); }
-  .here{ display:none; }        /* the wordmark alone carries the frame */
+  .here{ display:none; }        /* wordmark alone at this width */
 }
 @media (hover:none){
   .edge{ opacity:0 !important; }

@@ -22,23 +22,19 @@
   --rule2:#111;       /* structural rule */
   --wash:#f2f2f7;     /* reading ground, empty wells */
 
-  /* the two browser-default link colours, each holding one meaning:
-     blue = something you can open, purple = something you have opened */
+  /* browser-default link colours: blue = unvisited, purple = visited */
   --blue:#0000ee;
   --purple:#551a8b;
 
   /* ── families ─────────────────────────────────────────────────────
      display: Redaction 35, shipped with the site.
-     body:    Plantin MT Pro if the reader has it (Kenny does, via Adobe
-              Fonts), otherwise Times New Roman — which was drawn from
-              Plantin, so the fallback is the original's own descendant.
-     figures are set in the body face too, so the interface is two
-              families rather than three.                                */
+     body:    Plantin MT Pro, else Times New Roman (drawn from Plantin).
+     figures use the body face.                                          */
   --display:"Redaction 35","Times New Roman",Times,serif;
   --body:"Plantin MT Pro","Plantin MT Pro Light","Times New Roman",Times,
          "Liberation Serif","Hiragino Mincho ProN","Yu Mincho",serif;
 
-  /* ── six steps, nothing between them ──────────────────────────────
+  /* ── six steps ────────────────────────────────────────────────────
      t1  the one large thing on a screen      display
      t2  book titles, section heads           display
      t3  prose (body default)                 body
@@ -52,7 +48,7 @@
   --t5:11px;
   --t6:10.5px;
 
-  /* ── spacing, one rhythm ──────────────────────────────────────── */
+  /* ── spacing ──────────────────────────────────────────────────── */
   --s1:6px;
   --s2:12px;
   --s3:22px;
@@ -75,9 +71,7 @@ a{ color:var(--blue); text-decoration:underline; text-underline-offset:2px;
 a:visited{ color:var(--purple); }
 ::selection{ background:var(--blue); color:#fff; }
 
-/* the one accent move: invert whatever you are about to open.
-   the band is drawn with box-shadow, not padding, so hovering cannot
-   reflow the line — nothing on the page moves, ever. */
+/* box-shadow, not padding, so hover does not reflow the line */
 .invert{ justify-self:start; }
 .invert:hover, .invert:focus-visible{
   background:var(--blue); color:#fff; text-decoration:none; outline:none;

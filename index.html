@@ -16,7 +16,6 @@
 <link rel="prefetch" as="image" href="photography/pages/view/01.webp">
 <link rel="prefetch" as="image" href="work/pages/view/01.webp">
 <style>
-  /* the page is a fixed frame: it never scrolls and nothing in it moves */
   html,body{ height:100%; }
   body{
     height:100svh;
@@ -28,8 +27,7 @@
   }
   .card{ width:min(430px,100%); margin:0 auto; align-self:center; }
 
-  /* cap height seated on the frame, not the box top:
-     halfLeading + (ascent − capHeight) = .201em for this face at 1.06 */
+  /* halfLeading + (ascent - capHeight) = .201em for this face at 1.06 */
   h1{
     font:400 var(--t1)/1.06 var(--display);
     letter-spacing:-.012em;
@@ -45,7 +43,7 @@
 
   .elsewhere{
     display:flex; flex-direction:column; align-items:flex-start;
-    margin-top:var(--s5);   /* wider than the title gap, so the documents read as one group */
+    margin-top:var(--s5);   /* wider than the title gap, so the doc links group */
     font-size:var(--t4);
     line-height:1.9;
   }
@@ -56,14 +54,13 @@
     font-size:var(--t6); letter-spacing:.09em; color:var(--faint);
   }
 
-  /* short windows: tighten before anything is ever cut off */
+  /* tighten spacing before content clips */
   @media (max-height:620px){
     body{ padding-top:var(--s4); }
     h1{ margin-bottom:var(--s3); }
     .elsewhere{ margin-top:var(--s3); line-height:1.75; }
   }
-  /* below this the frame genuinely cannot hold it, and hiding beats nothing:
-     allow a scroll rather than clip the contact details */
+  /* too short to fit; scroll rather than clip */
   @media (max-height:400px){
     body{ height:auto; min-height:100svh; overflow-y:auto; }
   }

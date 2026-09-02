@@ -15,9 +15,9 @@
 <link rel="stylesheet" href="../assets/type.css?v=9">
 <link rel="stylesheet" href="../assets/style.css?v=9">
 <style>
-  /* The sheet is laid out from pages.js, so a cv of any length works and the
-     page's aspect follows the pdf. Height is the smaller of what the window
-     allows and what the width allows — no script needed for the sizing. */
+  /* laid out from pages.js: any page count, aspect follows the pdf.
+     height is the smaller of what the window and the width allow, so
+     sizing needs no script. */
   .sheet{
     --pad-x:calc(var(--frame) * 1.6);
     --pad-y:calc(var(--frame) * 2.4);
@@ -35,10 +35,10 @@
     height:100%;
   }
   .sheet .page img{ display:block; width:100%; height:100%; object-fit:fill; }
-  /* separate sheets, not a designed spread: mark each join */
+  /* separate sheets, so mark each join */
   .sheet .page + .page{ box-shadow:-1px 0 0 0 var(--page-edge); }
 
-  /* upright windows: stack the pages and let them scroll */
+  /* upright windows: stack and scroll */
   @media (max-aspect-ratio:1/1){
     .stage{ overflow-y:auto; align-items:flex-start; }
     .sheet{
@@ -92,7 +92,7 @@
     img.decoding = 'async';
     page.append(img);
 
-    /* the pdf's own hyperlinks, laid back over the rasterised page */
+    /* link overlays from the pdf */
     for (const L of (CV.links && CV.links[String(n)]) || []) {
       const a = document.createElement('a');
       a.className = 'pin';
@@ -108,8 +108,7 @@
     sheet.append(page);
   }
 
-  /* esc closes it the way the back button would: return where you came from,
-     and fall back to the index if this page was opened cold. */
+  /* esc goes back, or to the index if the page was opened cold */
   addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
     if (history.length > 1) history.back();

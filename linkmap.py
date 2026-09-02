@@ -1,24 +1,21 @@
 """Lift live hyperlinks out of a PDF.
 
-A page drawn in InDesign prints its links blue and underlined, but the real
-targets live as PDF annotations. Rasterising the page to WebP throws them away,
-so build.sh pulls them out through here and the viewers lay transparent anchors
-back over the image.
+Rasterising a page to WebP drops its link annotations. build.sh extracts them
+here and the viewers overlay transparent anchors on the image.
 
-Coordinates come back as fractions of a single leaf, which is what makes them
-survive every later decision: render width, display size, zoom.
+Coordinates are fractions of a leaf, so they survive render width, display
+size, and zoom.
 """
 
 
 def extract(pdf_path, leaves=1):
     """Return {leaf_number: [{x, y, w, h, href}, ...]}.
 
-    `leaves` is how many leaves each PDF page is cut into — 1 for portrait
-    pages, 2 for a landscape 2-up export. Rectangles are clipped per leaf, so a
-    link crossing the gutter of a 2-up survives the split as two pieces.
+    `leaves` is how many leaves each PDF page splits into: 1 for portrait, 2 for
+    a landscape 2-up. Rectangles are clipped per leaf, so a link crossing the
+    gutter comes back as two pieces.
 
-    Raises ImportError if pypdf is not installed; callers decide whether that
-    is fatal.
+    Raises ImportError if pypdf is missing.
     """
     from pypdf import PdfReader
 
@@ -37,14 +34,14 @@ def extract(pdf_path, leaves=1):
             try:
                 annot = ref.get_object()
             except Exception:
-                continue                                  # broken ref: skip it
+                continue                                  # broken ref
             if annot.get("/Subtype") != "/Link":
                 continue
             action = annot.get("/A") or {}
             uri = action.get("/URI")
             rect = annot.get("/Rect")
             if not uri or not rect or len(rect) != 4:
-                continue                     # internal jump, or a malformed one
+                continue                     # internal jump or malformed
 
             r = [float(v) for v in rect]
             x0, x1 = sorted((r[0] - origin_x, r[2] - origin_x))

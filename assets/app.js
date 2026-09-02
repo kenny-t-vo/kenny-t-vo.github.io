@@ -25,9 +25,9 @@
 
   /* ---------- view model: which pages sit side by side ---------- */
 
-  /* Two export shapes reach the viewer. A book of portrait pages opens on a
-     lone cover and pairs 2-3, 4-5 ... A book exported as 2-ups was already
-     spreads before build.sh cut it into leaves, so those pair straight off. */
+  /* portrait pages open on a lone cover, then pair 2-3, 4-5 ...
+     2-up exports were already spreads before build.sh split them into
+     leaves, so those pair straight off. */
   const spreads = (() => {
     const out = [];
     let p = 1;
@@ -41,7 +41,7 @@
     window.innerWidth >= 640 && window.innerWidth / window.innerHeight >= 1.1;
 
   let views = wantsSpreads() ? spreads : singles;
-  let page  = 1;                                 // anchor page, source of truth
+  let page  = 1;                                 // anchor page
   let idx   = 0;                                 // index into `views`
 
   const findView = p => views.findIndex(v => v.includes(p));
@@ -74,7 +74,7 @@
       img.complete ? show() : img.addEventListener('load', show, { once: true });
       leaf.append(img);
 
-      /* the pdf's own hyperlinks, laid back over the rasterised page */
+      /* link overlays from the pdf */
       for (const L of (BOOK.links && BOOK.links[n]) || []) {
         const a = document.createElement('a');
         a.className = 'pin';
@@ -195,7 +195,7 @@
       step(dx < 0 ? 1 : -1);
     } else if (moved < 10 && leaf && Date.now() - down.t < 600
                && !down.target.closest?.('a')) {
-      openLens(idx);          // a tap on a link belongs to the link
+      openLens(idx);          // links handle their own taps
     }
     down = null;
   });
@@ -258,9 +258,9 @@
   document.getElementById('zoom-btn')
     .addEventListener('click', () => (lensEl.hidden ? openLens(idx) : closeLens()));
 
-  /* The lens holds the whole spread, not one leaf, so a photograph running
-     across the gutter stays whole while you pan around it. Page size is known
-     up front, so the sheet is laid out and fitted before anything loads. */
+  /* the lens holds the whole spread, so an image crossing the gutter stays
+     whole. page size is known up front, so the sheet is laid out and fitted
+     before anything loads. */
   function openLens(i) {
     lensIdx = Math.max(0, Math.min(views.length - 1, i));
     const view = views[lensIdx];
@@ -395,15 +395,14 @@
   document.addEventListener('fullscreenchange', () =>
     fullBtn.setAttribute('aria-pressed', String(!!document.fullscreenElement)));
 
-  /* the delay is a knob at the top of style.css, so it lives in one place */
+  /* --idle-after is defined in style.css */
   const idleAfter = parseFloat(
     getComputedStyle(document.documentElement).getPropertyValue('--idle-after')) || 2600;
 
-  /* ---------- the one thing a phone cannot show you ---------- */
+  /* ---------- rotate hint ---------- */
 
-  /* Upright, the viewer shows a single leaf and gives no clue that the spread
-     exists. Tell the reader once: only on a touch device, only while actually
-     showing single leaves, and never again once they have seen a spread. */
+  /* upright shows a single leaf with no hint that spreads exist. shown once,
+     on touch devices only, and not again after a spread is seen. */
   const hintEl = document.getElementById('rotate-hint');
   const canRotate = matchMedia('(hover: none) and (pointer: coarse)').matches;
   const HINT_KEY = 'kv:spread-hint-done';
@@ -423,11 +422,10 @@
   }
   function offerHint() {
     if (!hintEl || !canRotate || hintDone()) return;
-    if (views === spreads) return hideHint(true);   // they turned it: lesson learned
+    if (views === spreads) return hideHint(true);   // already seen a spread
     hintEl.hidden = false;
     clearTimeout(hintTimer);
-    /* six seconds on screen is a fair chance to read nineteen characters;
-       after that, retire it so a returning reader is not told twice */
+    /* 6s, then retire it so it is not shown again */
     hintTimer = setTimeout(() => hideHint(true), 6000);
   }
 

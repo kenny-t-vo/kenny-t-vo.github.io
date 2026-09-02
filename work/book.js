@@ -4,7 +4,7 @@ window.BOOK = {
   aspect: 0.77266,   /* leaf width / height */
   fullWidth: 2600,     /* px width of the zoom tier */
   pairing: "spreads",   /* "cover": 1, 2-3 ... N alone | "spreads": 1-2, 3-4 ... */
-  /* live links lifted from the pdf, as fractions of a leaf */
+  /* link rects, as fractions of a leaf */
   links: {
   "2": [
     {

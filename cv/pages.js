@@ -2,7 +2,7 @@
 window.CV = {
   pages: 2,
   aspect: 0.772727,   /* page width / height */
-  /* live links lifted from the pdf, as fractions of a page */
+  /* link rects, as fractions of a page */
   links: {
   "1": [
     {
