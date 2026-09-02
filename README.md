@@ -1,14 +1,13 @@
 # kennyvophotography
 
-A self-hosted replacement for Issuu: the photography portfolio as a fit-to-window
-spread viewer. Static files only — no build step to deploy, no dependencies, no
-subscription.
+Self-hosted photography portfolio as a fit-to-window
+spread viewer.
 
 **Live:** https://kenny-t-vo.github.io/kennyvophotography/
 
 ## How it works
 
-The PDF is never sent to the browser. `build.sh` renders every page at 300 dpi and
+The PDF is not sent to the browser. `build.sh` renders every page at 300 dpi and
 derives three WebP tiers:
 
 | tier | width | used for | total |
