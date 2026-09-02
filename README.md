@@ -94,16 +94,19 @@ Two messages worth recognising:
 
 ## Hyperlinks
 
-The books draw their links blue and underlined, but the live targets are PDF
-annotations, and rasterising a page throws them away. `build.sh` lifts the
-rectangles out with `pypdf` and stores them in `book.js` as fractions of a leaf;
-the viewer lays transparent anchors back over the page, so the printed links are
-clickable again. Rectangles are clipped per leaf, so a link crossing the gutter of
-a 2-up export survives being split.
+A PDF draws its links blue and underlined, but the live targets are annotations,
+and rasterising a page throws them away. Every build runs the PDF through
+`linkmap.py`, which lifts the rectangles out and returns them as fractions of a
+leaf; the viewers lay transparent anchors back over the page, so the printed links
+are clickable again. This is automatic and applies to all three documents — there
+is no flag, and nothing to remember when you add a link in InDesign or Word.
 
-The cost is the reason to do it this way rather than embedding the PDF: 1.7 KB for
-the work samples' ten links, 239 bytes for the photography's one. Nothing is added
-to the images.
+Rectangles are clipped per leaf, so a link crossing the gutter of a 2-up export
+survives being split into two pieces.
+
+The cost is the reason to do it this way rather than embedding the PDF: about 1.7 KB
+for the work samples' ten links, and a few hundred bytes each for the photography's
+one and the cv's three. Nothing is added to the images.
 
 Links are live in the reading view, not in the zoom lens, where dragging to pan
 would fire them by accident. If `pypdf` is missing the build still succeeds and
@@ -186,6 +189,11 @@ photography/
   book.js             generated: leaf count, aspect, pairing mode
   pages/              generated: view / full / thumb WebP tiers
 work/                 the same three, for the other book
-cv/                   two pages, one spread, no controls — and the pdf itself
-build.sh              PDF → one book's page images
+cv/
+  index.html          builds itself from pages.js: any page count, links and all
+  pages.js            generated: page count, aspect, links
+  pages/              generated: one lossless tier
+  Vo_Kenny_CV.pdf     generated: a copy, for the download link
+build.sh              PDF → one document's pages
+linkmap.py            PDF link annotations → fractions of a leaf
 ```
