@@ -1,4 +1,4 @@
-# kennyvophotography
+# kenny vo, photography.
 
 Self-hosted photography portfolio as a fit-to-window
 spread viewer.
