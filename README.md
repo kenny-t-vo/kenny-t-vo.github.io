@@ -45,6 +45,11 @@ to a page, so you can send someone straight to a specific spread.
 git add -A && git commit -m "update portfolio" && git push
 ```
 
+When you edit `assets/app.js` or `assets/style.css`, bump the `?v=` number on
+their `<script>`/`<link>` tags in `index.html`. GitHub Pages caches HTML and assets
+for ten minutes independently, so without the bump a returning visitor can briefly
+load the new page against the old script. The number is arbitrary — just change it.
+
 `build.sh` rewrites the page images, `pages/manifest.json`, `assets/book.js`
 (page count + page aspect ratio, read by the viewer) and the social card. Any page
 count works — the pairing and the index adapt. Requires:
