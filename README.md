@@ -1,4 +1,4 @@
-# kenny vo, books.
+# Some books.
 
 Two self-hosted portfolios as fit-to-window spread viewers, sharing one copy of the
 viewer between them.
