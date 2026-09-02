@@ -108,6 +108,7 @@
   /* ---------- navigation ---------- */
 
   function goToView(i, anchor) {
+    hideHint(false);
     idx = Math.max(0, Math.min(views.length - 1, i));
     page = anchor ?? views[idx][0];
     render();
@@ -132,6 +133,7 @@
       idx = findView(page);
       render();
       if (!lensEl.hidden) openLens(idx);
+      offerHint();
     } else {
       layout();
     }
@@ -382,6 +384,38 @@
   const idleAfter = parseFloat(
     getComputedStyle(document.documentElement).getPropertyValue('--idle-after')) || 2600;
 
+  /* ---------- the one thing a phone cannot show you ---------- */
+
+  /* Upright, the viewer shows a single leaf and gives no clue that the spread
+     exists. Tell the reader once: only on a touch device, only while actually
+     showing single leaves, and never again once they have seen a spread. */
+  const hintEl = document.getElementById('rotate-hint');
+  const canRotate = matchMedia('(hover: none) and (pointer: coarse)').matches;
+  const HINT_KEY = 'kv:spread-hint-done';
+  let hintTimer;
+
+  const hintDone = () => {
+    try { return localStorage.getItem(HINT_KEY) === '1'; } catch { return false; }
+  };
+  const retireHint = () => {
+    try { localStorage.setItem(HINT_KEY, '1'); } catch { /* private window: fine */ }
+  };
+  function hideHint(forGood) {
+    if (!hintEl) return;
+    hintEl.hidden = true;
+    clearTimeout(hintTimer);
+    if (forGood) retireHint();
+  }
+  function offerHint() {
+    if (!hintEl || !canRotate || hintDone()) return;
+    if (views === spreads) return hideHint(true);   // they turned it: lesson learned
+    hintEl.hidden = false;
+    clearTimeout(hintTimer);
+    /* six seconds on screen is a fair chance to read nineteen characters;
+       after that, retire it so a returning reader is not told twice */
+    hintTimer = setTimeout(() => hideHint(true), 6000);
+  }
+
   let idleTimer;
   const wake = () => {
     document.body.classList.remove('idle');
@@ -401,6 +435,7 @@
   page = fromHash();
   idx = findView(page);
   render();
+  offerHint();
   window.addEventListener('hashchange', () => {
     const p = fromHash();
     if (!views[idx].includes(p)) goToPage(p);

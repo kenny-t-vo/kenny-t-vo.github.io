@@ -251,6 +251,24 @@ body.veiled .bar, body.veiled .edge{ opacity:0 !important; pointer-events:none; 
     rgba(0,0,0,calc(.055 * var(--gutter-strength))) 58%,
     rgba(0,0,0,0) 100%);
 }
+/* Phones get one leaf at a time, and nothing on screen says the spread is a
+   rotation away. Said once, quietly, under the page — never on a desktop, and
+   never again once the reader has actually seen a spread. */
+.rotate-hint{
+  position:fixed;
+  left:0; right:0;
+  bottom:calc(var(--frame) + 3.4em);   /* clears the chrome's box, not just its ink */
+  text-align:center;
+  font:var(--t6)/1 var(--body);
+  letter-spacing:.09em;
+  color:var(--faint);
+  pointer-events:none;
+  z-index:6;
+}
+.rotate-hint[hidden]{ display:none; }
+@media (hover:hover){ .rotate-hint{ display:none !important; } }
+body.veiled .rotate-hint{ display:none; }
+
 .lens__hint{
   position:fixed;
   bottom:max(var(--frame),env(safe-area-inset-bottom));
