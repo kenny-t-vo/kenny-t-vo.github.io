@@ -4,59 +4,171 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>kenny vo.</title>
-<meta name="description" content="photography and selected work, read as spreads.">
-<meta name="theme-color" content="#101010">
+<meta name="description" content="two books, read as spreads: photography, and selected work.">
+<meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="kenny vo.">
-<meta property="og:description" content="photography and selected work, read as spreads.">
+<meta property="og:description" content="two books, read as spreads: photography, and selected work.">
 <meta property="og:image" content="photography/pages/social.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23101010'/><rect x='6' y='7' width='9' height='18' fill='%23f2f0ec'/><rect x='17' y='7' width='9' height='18' fill='%23f2f0ec'/></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fff'/><rect x='6' y='7' width='9' height='18' fill='%230000ee'/><rect x='17' y='7' width='9' height='18' fill='%230000ee'/></svg>">
 <style>
-  :root{
-    --bg:#0e0e0e; --bg-lift:#171717; --ink:#f2f0ec; --ink-dim:#8d8a85; --accent:#5f60ec;
-    --serif:"Times New Roman", Times, serif;
-  }
-  *{ box-sizing:border-box; }
-  html,body{ height:100%; }
-  body{
-    margin:0; display:grid; place-items:center;
-    padding:clamp(24px,6vw,64px);
-    background:radial-gradient(120% 100% at 50% 0%, var(--bg-lift), var(--bg) 70%);
-    color:var(--ink); font-family:var(--serif);
-    -webkit-font-smoothing:antialiased;
-  }
-  .shelf{ width:min(620px,100%); }
-  h1{
-    font-size:15px; font-weight:400; letter-spacing:.04em;
-    margin:0 0 clamp(28px,5vh,44px);
-  }
-  h1 em{ font-style:italic; color:var(--ink-dim); margin-left:.4em; }
-  ul{ list-style:none; margin:0; padding:0; }
-  li + li{ margin-top:2px; }
-  a.book{
-    display:flex; align-items:baseline; gap:.75em;
-    padding:16px 4px; text-decoration:none; color:var(--ink);
-    border-top:1px solid rgba(255,255,255,.12);
-    transition:color .18s ease, padding-left .18s ease;
-  }
-  li:last-child a.book{ border-bottom:1px solid rgba(255,255,255,.12); }
-  a.book:hover, a.book:focus-visible{ color:var(--accent); padding-left:10px; outline:none; }
-  .name{ font-size:19px; letter-spacing:.01em; }
-  .meta{ margin-left:auto; font-size:11px; letter-spacing:.1em; color:var(--ink-dim); }
-  a.book:hover .meta{ color:var(--accent); }
-  footer{ margin-top:clamp(28px,5vh,44px); font-size:11px; letter-spacing:.06em; color:var(--ink-dim); }
-  footer a{ color:inherit; }
-  @media (prefers-reduced-motion:reduce){ *{ transition-duration:.01ms !important; } }
+:root{
+  --bg:#fff;
+  --fg:#111;
+  --dim:#6f6f6f;
+  --faint:#9a9a9a;
+  --rule:#dcdcdc;
+  --rule2:#111;
+  --wash:#f2f2f7;
+
+  /* blue = a book you can open, purple = one you have opened */
+  --blue:#0000ee;
+  --purple:#551a8b;
+
+  --serif:"Times New Roman",Times,"Liberation Serif",
+          "Hiragino Mincho ProN","Yu Mincho",serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+
+  --t1:30px;    /* the single large element */
+  --t2:18px;    /* book titles */
+  --t3:14px;    /* prose */
+  --t4:12.5px;  /* secondary copy */
+  --t5:11px;    /* numeric data */
+  --t6:10.5px;  /* labels */
+
+  --leaf:84px;  /* filmstrip height — not a type step */
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+body{
+  background:var(--bg); color:var(--fg);
+  font:var(--t3)/1.45 var(--serif);
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  padding:clamp(30px,7vh,72px) clamp(20px,6vw,56px);
+}
+a{ color:var(--blue); text-decoration:underline; text-underline-offset:2px; }
+a:visited{ color:var(--purple); }
+::selection{ background:var(--blue); color:#fff; }
+
+.sheet{ width:min(680px,100%); margin:0 auto; }
+
+/* cap height seated on the top margin, not the box top:
+   offset = halfLeading + (ascent - capHeight) = .201em for Times at 1.06 */
+h1{
+  font-size:var(--t1); font-weight:400; line-height:1.06;
+  letter-spacing:-.018em; margin:-0.201em 0 6px;
+}
+.standfirst{ font-size:var(--t4); color:var(--dim); margin-bottom:clamp(26px,5vh,44px); }
+
+.lbl{
+  display:block; font-size:var(--t6); line-height:1;
+  letter-spacing:.09em; color:var(--faint); margin-bottom:7px;
+}
+
+hr{ border:0; border-top:1px solid var(--rule2); }
+hr.hair{ border-top-color:var(--rule); }
+
+.entry{ padding:15px 0 17px; }
+
+/* both edges are promises: words flush left, figures flush right */
+.line{
+  display:grid; grid-template-columns:1fr auto;
+  align-items:baseline; gap:14px;
+}
+.line + .line{ margin-top:2px; }
+.name{ font-size:var(--t2); line-height:1.2; }
+.desc{ font-size:var(--t4); color:var(--dim); }
+.fig{
+  font:var(--t5)/1.5 var(--mono);
+  font-variant-numeric:tabular-nums; color:var(--dim);
+  white-space:nowrap;
+}
+
+/* the one accent move: invert the book you are about to open */
+/* shrink-wrap the link, or the inversion paints the whole grid cell */
+a.name{ justify-self:start; text-decoration-thickness:1px; }
+a.name:hover, a.name:focus-visible{
+  background:var(--blue); color:#fff;
+  text-decoration:none; outline:none;
+  box-decoration-break:clone; -webkit-box-decoration-break:clone;
+  padding:0 .16em; margin:0 -.16em;
+}
+
+.strip{ display:flex; gap:6px; margin-top:13px; }
+.strip a{
+  display:block; line-height:0;
+  border:1px solid var(--rule); background:var(--wash);
+  height:var(--leaf); aspect-ratio:.77266;
+}
+.strip img{ width:100%; height:100%; object-fit:fill; }
+.strip a:hover, .strip a:focus-visible{ border-color:var(--blue); outline:none; }
+
+footer{ margin-top:clamp(22px,4vh,36px); font-size:var(--t4); color:var(--dim); }
+
+@media (max-width:520px){
+  :root{ --leaf:64px; }
+  .strip{ gap:5px; }
+}
+@media (max-height:560px){
+  body{ padding-top:24px; padding-bottom:24px; }
+  .strip{ display:none; }        /* the least important block goes first */
+}
+@media (prefers-reduced-motion:reduce){ *{ transition:none !important; } }
 </style>
 </head>
 <body>
-<main class="shelf">
-  <h1>kenny vo. <em>two books, read as spreads</em></h1>
-  <ul>
-    <li><a class="book" href="photography/"><span class="name">photography.</span><span class="meta">32 pages</span></a></li>
-    <li><a class="book" href="work/"><span class="name">work samples.</span><span class="meta">8 spreads</span></a></li>
-  </ul>
+<main class="sheet">
+
+  <h1>kenny vo.</h1>
+  <p class="standfirst">two books, read as spreads.</p>
+
+  <span class="lbl">contents.</span>
+  <hr>
+
+  <article class="entry">
+    <div class="line">
+      <a class="name" href="photography/">photography.</a>
+      <span class="fig">32 pages</span>
+    </div>
+    <div class="line">
+      <span class="desc">a photographic archive.</span>
+      <span class="fig">aug 2026</span>
+    </div>
+    <nav class="strip" aria-label="photography, selected pages">
+      <a href="photography/#p9"><img src="photography/pages/thumb/09.webp" alt="page 9" loading="lazy" width="320" height="414"></a>
+      <a href="photography/#p12"><img src="photography/pages/thumb/12.webp" alt="page 12" loading="lazy" width="320" height="414"></a>
+      <a href="photography/#p16"><img src="photography/pages/thumb/16.webp" alt="page 16" loading="lazy" width="320" height="414"></a>
+      <a href="photography/#p21"><img src="photography/pages/thumb/21.webp" alt="page 21" loading="lazy" width="320" height="414"></a>
+      <a href="photography/#p25"><img src="photography/pages/thumb/25.webp" alt="page 25" loading="lazy" width="320" height="414"></a>
+      <a href="photography/#p31"><img src="photography/pages/thumb/31.webp" alt="page 31" loading="lazy" width="320" height="414"></a>
+    </nav>
+  </article>
+
+  <hr class="hair">
+
+  <article class="entry">
+    <div class="line">
+      <a class="name" href="work/">work samples.</a>
+      <span class="fig">8 spreads</span>
+    </div>
+    <div class="line">
+      <span class="desc">exhibitions, objects, and one dome.</span>
+      <span class="fig">aug 2026</span>
+    </div>
+    <nav class="strip" aria-label="work samples, selected pages">
+      <a href="work/#p1"><img src="work/pages/thumb/01.webp" alt="page 1" loading="lazy" width="320" height="414"></a>
+      <a href="work/#p3"><img src="work/pages/thumb/03.webp" alt="page 3" loading="lazy" width="320" height="414"></a>
+      <a href="work/#p5"><img src="work/pages/thumb/05.webp" alt="page 5" loading="lazy" width="320" height="414"></a>
+      <a href="work/#p9"><img src="work/pages/thumb/09.webp" alt="page 9" loading="lazy" width="320" height="414"></a>
+      <a href="work/#p11"><img src="work/pages/thumb/11.webp" alt="page 11" loading="lazy" width="320" height="414"></a>
+      <a href="work/#p13"><img src="work/pages/thumb/13.webp" alt="page 13" loading="lazy" width="320" height="414"></a>
+    </nav>
+  </article>
+
+  <hr class="hair">
+
   <footer><a href="mailto:tsukinomekv@gmail.com">tsukinomekv@gmail.com</a></footer>
+
 </main>
 </body>
 </html>
