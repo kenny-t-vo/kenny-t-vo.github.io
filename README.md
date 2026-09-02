@@ -60,9 +60,12 @@ brew install poppler webp
 pip3 install pillow
 ```
 
-Then for each new edition, naming the PDF and the book directory:
+Then for each new edition, naming the PDF and the book directory. **Start with the
+pull** — anything edited on github.com lives only there until you fetch it, and a
+build on top of a stale clone cannot be pushed:
 
 ```bash
+git pull --rebase
 ./build.sh "path/to/Photography Portfolio.pdf" photography
 ./build.sh "path/to/Work Samples.pdf" work
 git add -A && git commit -m "update books" && git push
@@ -72,6 +75,15 @@ git add -A && git commit -m "update books" && git push
 and pairing mode) and its social card. It touches nothing outside the book directory,
 so rebuilding one book cannot disturb the other. Any page count works; the pairing
 and the index adapt.
+
+Two messages worth recognising:
+
+- **"nothing to commit, working tree clean"** — the rebuild produced identical files,
+  so the PDF had not actually changed. Not an error, but it stops the `&&` chain
+  before the push, so anything committed earlier stays unpushed.
+- **"your branch and 'origin/main' have diverged"** — you committed locally while a
+  different commit sits on the remote, usually a github.com edit. `git pull --rebase`
+  replays your commit on top of it; then push. Nothing is lost either way.
 
 ## The knobs
 
