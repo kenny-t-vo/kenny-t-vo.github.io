@@ -101,8 +101,7 @@ of the CSS so the delay lives in one place.
 | | | |
 |---|---|---|
 | **Redaction 35** | titles, book names, the wordmark | shipped with the site |
-| **Plantin MT Pro** | body and links | falls back to Times New Roman |
-| system monospace | folios and counts | tabular figures, so numbers align |
+| **Plantin MT Pro** | everything else, figures included | falls back to Times New Roman |
 
 Redaction 35 (Forest Young and Jeremy Mickel) is under the SIL Open Font License, so
 it is self-hosted in `assets/fonts/` with its licence rather than loaded from a CDN.
@@ -110,9 +109,13 @@ Plantin is an Adobe font and cannot be redistributed; the stack names it first, 
 appears on any machine that has it — yours, via Adobe Fonts — and everyone else gets
 Times New Roman, which was drawn from Plantin and is its closest living relative.
 
+Two families, not three: the folios and index labels are set in the body face rather
+than a monospace, so the interface reads as one voice.
+
 Sizes come from six steps in `assets/type.css` (`--t1` … `--t6`) and nothing sits
 between them: 30 / 18 / 14 / 12.5 / 11 / 10.5. Spacing runs on one rhythm, `--s1` …
-`--s5`.
+`--s5`. Nothing on any page moves: the inverted hover band is drawn with `box-shadow`
+rather than padding, so hovering can never reflow a line.
 
 ## Editing the viewer
 
@@ -147,5 +150,6 @@ photography/
   book.js             generated: leaf count, aspect, pairing mode
   pages/              generated: view / full / thumb WebP tiers
 work/                 the same three, for the other book
+cv/                   two pages, one spread, no controls — and the pdf itself
 build.sh              PDF → one book's page images
 ```

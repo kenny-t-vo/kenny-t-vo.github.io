@@ -4,30 +4,29 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>kenny vo.</title>
-<meta name="description" content="photography, and selected work.">
+<meta name="description" content="photography, selected work, and a cv.">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="kenny vo.">
-<meta property="og:description" content="photography, and selected work.">
+<meta property="og:description" content="photography, selected work, and a cv.">
 <meta property="og:image" content="photography/pages/social.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fff'/><rect x='6' y='7' width='9' height='18' fill='%230000ee'/><rect x='17' y='7' width='9' height='18' fill='%230000ee'/></svg>">
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/redaction-35-400.woff2" crossorigin>
-<link rel="stylesheet" href="assets/type.css?v=5">
-<!-- the covers are already warm by the time a book is clicked -->
+<link rel="stylesheet" href="assets/type.css?v=6">
 <link rel="prefetch" as="image" href="photography/pages/view/01.webp">
 <link rel="prefetch" as="image" href="work/pages/view/01.webp">
 <style>
+  /* the page is a fixed frame: it never scrolls and nothing in it moves */
+  html,body{ height:100%; }
   body{
-    min-height:100svh;
+    height:100svh;
+    overflow:hidden;
+    overscroll-behavior:none;
     display:grid;
     grid-template-rows:1fr auto;
     padding:var(--s5) clamp(24px,7vw,80px) var(--s4);
   }
-  .card{
-    width:min(430px,100%);
-    margin:0 auto;
-    align-self:center;
-  }
+  .card{ width:min(430px,100%); margin:0 auto; align-self:center; }
 
   /* cap height seated on the frame, not the box top:
      halfLeading + (ascent − capHeight) = .201em for this face at 1.06 */
@@ -38,7 +37,7 @@
   }
 
   nav{ display:flex; flex-direction:column; align-items:flex-start; }
-  .book{
+  .doc{
     font:400 var(--t2)/1.35 var(--display);
     letter-spacing:.004em;
     padding:var(--s1) 0;
@@ -46,24 +45,27 @@
 
   .elsewhere{
     display:flex; flex-direction:column; align-items:flex-start;
-    margin-top:var(--s5);   /* wider than the title gap, so the books group reads as one */
+    margin-top:var(--s5);   /* wider than the title gap, so the documents read as one group */
     font-size:var(--t4);
     line-height:1.9;
   }
 
   footer{
     align-self:end;
-    width:min(430px,100%);
-    margin:0 auto;
-    font-size:var(--t6);
-    letter-spacing:.09em;
-    color:var(--faint);
+    width:min(430px,100%); margin:0 auto;
+    font-size:var(--t6); letter-spacing:.09em; color:var(--faint);
   }
 
-  @media (max-height:480px){
+  /* short windows: tighten before anything is ever cut off */
+  @media (max-height:620px){
     body{ padding-top:var(--s4); }
     h1{ margin-bottom:var(--s3); }
-    .elsewhere{ margin-top:var(--s3); }
+    .elsewhere{ margin-top:var(--s3); line-height:1.75; }
+  }
+  /* below this the frame genuinely cannot hold it, and hiding beats nothing:
+     allow a scroll rather than clip the contact details */
+  @media (max-height:400px){
+    body{ height:auto; min-height:100svh; overflow-y:auto; }
   }
 </style>
 </head>
@@ -72,14 +74,17 @@
   <main class="card">
     <h1>kenny vo.</h1>
 
-    <nav aria-label="books">
-      <a class="book invert" href="photography/">photography.</a>
-      <a class="book invert" href="work/">work samples.</a>
+    <nav aria-label="documents">
+      <a class="doc invert" href="photography/">photography.</a>
+      <a class="doc invert" href="work/">work samples.</a>
+      <a class="doc invert" href="cv/">cv.</a>
     </nav>
 
     <div class="elsewhere">
       <a class="invert" href="https://www.linkedin.com/in/kenny-t-vo/">linkedin.</a>
+      <a class="invert" href="https://www.instagram.com/seefourtytwo/">instagram.</a>
       <a class="invert" href="https://github.com/kenny-t-vo">other projects.</a>
+      <a class="invert" href="https://www.last.fm/user/mirainome">listening to…</a>
       <a class="invert" href="mailto:kenny.t.vo@outlook.com">kenny.t.vo@outlook.com</a>
     </div>
   </main>

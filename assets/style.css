@@ -13,7 +13,7 @@
   --gutter-width:8.5%;        /* how far the crease spreads         */
 
   /* ── the reading surface ───────────────────────────────────────── */
-  --reading-ground:var(--wash);   /* what the pages sit on          */
+  --reading-ground:var(--bg);     /* what the pages sit on: pure white */
   --page-edge:var(--rule);        /* hairline around the spread     */
   --frame:clamp(16px,3.4vw,34px); /* margin from viewport to chrome */
 
@@ -130,7 +130,10 @@ body.idle .edge{ opacity:0; }
 body.idle .bar{ opacity:0; }
 body.veiled .bar, body.veiled .edge{ opacity:0 !important; pointer-events:none; }
 
+/* chrome is interface, not content: it never takes the visited colour.
+   purple stays reserved for documents you have actually read. */
 .wordmark{ font:400 var(--t2)/1 var(--display); letter-spacing:.004em; }
+.wordmark:visited, .tool:visited, .overlay__close:visited{ color:var(--blue); }
 .here{ font:400 var(--t2)/1 var(--display); color:var(--dim); letter-spacing:.004em; }
 
 .tools{ display:flex; gap:1.1em; align-items:baseline; }
@@ -144,12 +147,11 @@ body.veiled .bar, body.veiled .edge{ opacity:0 !important; pointer-events:none; 
 .tool:focus-visible{ outline:1px solid var(--blue); outline-offset:3px; }
 .tool[aria-pressed="true"]{
   background:var(--blue); color:#fff;
-  text-decoration:none; padding:0 .16em; margin:0 -.16em;
+  text-decoration:none; box-shadow:0 0 0 .16em var(--blue);
 }
 
 .counter{
-  font:var(--t5)/1 var(--mono);
-  font-variant-numeric:tabular-nums;
+  font:var(--t5)/1 var(--body);
   color:var(--dim);
   white-space:nowrap;
   user-select:none;
@@ -201,14 +203,13 @@ body.veiled .bar, body.veiled .edge{ opacity:0 !important; pointer-events:none; 
 .chip:hover .chip__pages img{ box-shadow:0 0 0 1px var(--blue); }
 .chip:focus-visible .chip__pages img{ box-shadow:0 0 0 1px var(--blue); }
 .chip__label{
-  font:var(--t5)/1 var(--mono);
-  font-variant-numeric:tabular-nums;
+  font:var(--t5)/1 var(--body);
   color:var(--faint);
 }
 .chip:hover .chip__label{ color:var(--blue); }
 .chip[aria-current="true"] .chip__label{
   background:var(--blue); color:#fff;
-  padding:2px .34em 3px; margin:-2px -.34em -3px;
+  box-shadow:0 0 0 .34em var(--blue);   /* no padding: nothing reflows */
 }
 
 /* zoom */

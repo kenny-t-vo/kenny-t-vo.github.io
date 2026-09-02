@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>kenny vo, cv.</title>
+<meta name="description" content="curriculum vitae, august 2026.">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:title" content="kenny vo, cv.">
+<meta property="og:description" content="curriculum vitae, august 2026.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fff'/><rect x='6' y='7' width='9' height='18' fill='%230000ee'/><rect x='17' y='7' width='9' height='18' fill='%230000ee'/></svg>">
+<link rel="preload" as="font" type="font/woff2" href="../assets/fonts/redaction-35-400.woff2" crossorigin>
+<link rel="preload" as="image" href="pages/1.webp">
+<link rel="stylesheet" href="../assets/type.css?v=6">
+<link rel="stylesheet" href="../assets/style.css?v=6">
+<style>
+  /* Two fixed pages, so the spread is sized in CSS — height is the smaller of
+     what the window allows and what the width allows. No script, no controls. */
+  .sheet{
+    --ar:1.5450;                                  /* two letter leaves */
+    --pad-x:calc(var(--frame) * 1.6);
+    --pad-y:calc(var(--frame) * 2.4);
+    display:flex;
+    aspect-ratio:var(--ar);
+    height:min(calc(100svh - 2 * var(--pad-y)),
+               calc((100vw - 2 * var(--pad-x)) / var(--ar)));
+    background:var(--bg);
+    box-shadow:0 0 0 1px var(--page-edge);
+  }
+  .sheet img{ display:block; width:50%; height:100%; object-fit:fill; }
+  /* two separate sheets, not a designed spread: mark the join.
+     box-shadow paints outside the box, so it adds no width. */
+  .sheet img:first-child{ box-shadow:1px 0 0 0 var(--page-edge); }
+
+  /* upright windows: stack the two pages and let them scroll */
+  @media (max-aspect-ratio:1/1){
+    .stage{ overflow-y:auto; align-items:flex-start; }
+    .sheet{
+      flex-direction:column;
+      gap:var(--s2);
+      aspect-ratio:auto;
+      height:auto;
+      width:min(calc(100vw - 2 * var(--pad-x)), 520px);
+      background:none;
+      box-shadow:none;              /* the hairline moves onto each page */
+    }
+    /* :first-child outranks .sheet img, so the join rule has to be undone
+       explicitly or the top page keeps only its right-hand hairline */
+    .sheet img, .sheet img:first-child{
+      width:100%; height:auto;
+      background:var(--bg);
+      box-shadow:0 0 0 1px var(--page-edge);
+    }
+  }
+</style>
+</head>
+<body data-book="cv">
+
+<main id="stage" class="stage" aria-label="curriculum vitae.">
+  <div class="sheet">
+    <img src="pages/1.webp" alt="curriculum vitae, page one." width="2000" height="2589">
+    <img src="pages/2.webp" alt="curriculum vitae, page two." width="2000" height="2589">
+  </div>
+</main>
+
+<header class="bar bar--top">
+  <a class="wordmark" href="../">kenny vo.</a>
+  <span class="here">cv.</span>
+</header>
+
+<footer class="bar bar--bottom">
+  <div class="tools">
+    <a class="tool" href="Vo_Kenny_CV.pdf" download>pdf.</a>
+  </div>
+  <a class="tool" id="close" href="../">close.</a>
+</footer>
+
+<script>
+  /* esc closes it the way the back button would: return where you came from,
+     and fall back to the index if this page was opened cold. */
+  addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (history.length > 1) history.back();
+    else location.href = '../';
+  });
+</script>
+</body>
+</html>

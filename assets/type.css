@@ -32,18 +32,18 @@
      body:    Plantin MT Pro if the reader has it (Kenny does, via Adobe
               Fonts), otherwise Times New Roman — which was drawn from
               Plantin, so the fallback is the original's own descendant.
-     mono:    figures only. tabular by default, so numbers column up.   */
+     figures are set in the body face too, so the interface is two
+              families rather than three.                                */
   --display:"Redaction 35","Times New Roman",Times,serif;
   --body:"Plantin MT Pro","Plantin MT Pro Light","Times New Roman",Times,
          "Liberation Serif","Hiragino Mincho ProN","Yu Mincho",serif;
-  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
 
   /* ── six steps, nothing between them ──────────────────────────────
      t1  the one large thing on a screen      display
      t2  book titles, section heads           display
      t3  prose (body default)                 body
      t4  secondary links and copy             body
-     t5  figures: folios, counts              mono
+     t5  figures: folios, counts              body
      t6  labels and key hints                 body                     */
   --t1:30px;
   --t2:18px;
@@ -76,12 +76,10 @@ a:visited{ color:var(--purple); }
 ::selection{ background:var(--blue); color:#fff; }
 
 /* the one accent move: invert whatever you are about to open.
-   justify-self keeps the band on the words, not the whole cell. */
+   the band is drawn with box-shadow, not padding, so hovering cannot
+   reflow the line — nothing on the page moves, ever. */
 .invert{ justify-self:start; }
 .invert:hover, .invert:focus-visible{
   background:var(--blue); color:#fff; text-decoration:none; outline:none;
-  padding:0 .16em; margin:0 -.16em;
-  box-decoration-break:clone; -webkit-box-decoration-break:clone;
+  box-shadow:0 0 0 .16em var(--blue);
 }
-
-.mono{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
