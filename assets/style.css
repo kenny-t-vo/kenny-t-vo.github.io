@@ -23,7 +23,8 @@
 }
 
 /* per book. the viewer reads these from <body data-book="…">. */
-body[data-book="photography"]{ --gutter-strength:.5; }   /* half strength */
+body[data-book="photography"]{ --gutter-strength:.25; }
+body[data-book="cv"]         { --gutter-strength:.25; }
 body[data-book="work"]       { --gutter-strength:0; }    /* off: its spreads
                                                             were drawn flat */
 
@@ -82,14 +83,18 @@ body{
 }
 .pin::after{ content:""; position:absolute; inset:-2px; }   /* tap area */
 
-/* ::before is the same band every other link on the site gets. These words are
-   printed into the image and cannot turn white, so the band covers them while
-   hovered; the title attribute carries the destination in the meantime. */
+/* ::before is the same band every other link gets, except that the words here
+   are baked into the artwork and cannot turn white on their own. build.sh
+   renders that patch inverted and recoloured — paper to blue, ink to white —
+   and it is laid over the real one on hover. */
 .pin::before{
   content:"";
   position:absolute;
-  inset:var(--hl-trim) calc(-1 * var(--hl-bleed));
-  background:var(--blue);
+  inset:0;                       /* the rect already carries the band padding */
+  background-color:var(--blue);  /* fallback if no chip was rendered */
+  background-image:var(--chip, none);
+  background-size:100% 100%;
+  background-repeat:no-repeat;
   opacity:0;
   transition:opacity var(--fade) ease;
 }
@@ -157,7 +162,9 @@ body.veiled .bar, body.veiled .edge{ opacity:0 !important; pointer-events:none; 
 
 /* chrome never takes the visited colour; purple is reserved for documents */
 .wordmark{ font:400 var(--t2)/1 var(--display); letter-spacing:.004em; }
-.wordmark:visited, .tool:visited, .overlay__close:visited{ color:var(--blue); }
+.wordmark:visited:not(:hover):not(:focus-visible),
+.tool:visited:not(:hover):not(:focus-visible),
+.overlay__close:visited:not(:hover):not(:focus-visible){ color:var(--blue); }
 .here{ font:400 var(--t2)/1 var(--display); color:var(--dim); letter-spacing:.004em; }
 
 .tools{ display:flex; gap:1.1em; align-items:baseline; }

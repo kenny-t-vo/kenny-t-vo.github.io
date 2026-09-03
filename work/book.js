@@ -8,88 +8,98 @@ window.BOOK = {
   links: {
   "2": [
     {
-      "x": 0.1683,
-      "y": 0.61139,
-      "w": 0.15727,
-      "h": 0.01701,
-      "href": "https://www.instagram.com/seefourtytwo/"
+      "x": 0.16557,
+      "y": 0.61231,
+      "w": 0.16271,
+      "h": 0.01788,
+      "href": "https://www.instagram.com/seefourtytwo/",
+      "chip": "pages/link/2-0.webp"
     }
   ],
   "4": [
     {
-      "x": 0.1683,
-      "y": 0.61139,
-      "w": 0.13903,
-      "h": 0.01701,
-      "href": "https://scaffoldjournal.com/"
+      "x": 0.16549,
+      "y": 0.61252,
+      "w": 0.1444,
+      "h": 0.01598,
+      "href": "https://scaffoldjournal.com/",
+      "chip": "pages/link/4-0.webp"
     }
   ],
   "6": [
     {
-      "x": 0.1683,
-      "y": 0.61139,
-      "w": 0.17551,
-      "h": 0.01701,
-      "href": "https://www.instagram.com/eitherordaniels/"
+      "x": 0.16588,
+      "y": 0.61252,
+      "w": 0.18017,
+      "h": 0.01598,
+      "href": "https://www.instagram.com/eitherordaniels/",
+      "chip": "pages/link/6-0.webp"
     }
   ],
   "8": [
     {
-      "x": 0.1683,
-      "y": 0.61139,
-      "w": 0.28749,
-      "h": 0.01701,
-      "href": "https://www.daniels.utoronto.ca/events/1781456400/responsive-architecture-surface-system"
+      "x": 0.16631,
+      "y": 0.61281,
+      "w": 0.29008,
+      "h": 0.01331,
+      "href": "https://www.daniels.utoronto.ca/events/1781456400/responsive-architecture-surface-system",
+      "chip": "pages/link/8-0.webp"
     }
   ],
   "10": [
     {
-      "x": 0.1683,
-      "y": 0.61139,
-      "w": 0.25037,
-      "h": 0.01701,
-      "href": "https://civmin.utoronto.ca/robot-made-2025/"
+      "x": 0.16557,
+      "y": 0.61231,
+      "w": 0.25578,
+      "h": 0.01788,
+      "href": "https://civmin.utoronto.ca/robot-made-2025/",
+      "chip": "pages/link/10-0.webp"
     }
   ],
   "12": [
     {
-      "x": 0.1683,
-      "y": 0.61139,
-      "w": 0.29315,
-      "h": 0.01701,
-      "href": "https://www.instagram.com/p/C3ym38WJET5/?img_index=1"
+      "x": 0.16557,
+      "y": 0.61231,
+      "w": 0.29848,
+      "h": 0.01788,
+      "href": "https://www.instagram.com/p/C3ym38WJET5/?img_index=1",
+      "chip": "pages/link/12-0.webp"
     }
   ],
   "14": [
     {
-      "x": 0.1683,
-      "y": 0.61263,
-      "w": 0.20874,
-      "h": 0.01547,
-      "href": "https://www.instagram.com/p/DFQu8ouyOOk/"
+      "x": 0.16588,
+      "y": 0.61371,
+      "w": 0.21363,
+      "h": 0.01598,
+      "href": "https://www.instagram.com/p/DFQu8ouyOOk/",
+      "chip": "pages/link/14-0.webp"
     }
   ],
   "16": [
     {
-      "x": 0.1683,
-      "y": 0.66033,
-      "w": 0.04941,
-      "h": 0.01309,
-      "href": "https://www.linkedin.com/in/kenny-t-vo/"
+      "x": 0.16714,
+      "y": 0.6598,
+      "w": 0.05265,
+      "h": 0.01293,
+      "href": "https://www.linkedin.com/in/kenny-t-vo/",
+      "chip": "pages/link/16-0.webp"
     },
     {
-      "x": 0.1683,
-      "y": 0.68306,
-      "w": 0.07303,
-      "h": 0.01309,
-      "href": "https://kenny-t-vo.github.io/kennyvophotography/"
+      "x": 0.16598,
+      "y": 0.68358,
+      "w": 0.07726,
+      "h": 0.01293,
+      "href": "https://kenny-t-vo.github.io/kennyvophotography/",
+      "chip": "pages/link/16-1.webp"
     },
     {
-      "x": 0.1683,
-      "y": 0.70578,
-      "w": 0.03394,
-      "h": 0.01309,
-      "href": "mailto:kenny.t.vo%40outlook.com?subject="
+      "x": 0.16675,
+      "y": 0.70527,
+      "w": 0.03726,
+      "h": 0.01293,
+      "href": "mailto:kenny.t.vo%40outlook.com?subject=",
+      "chip": "pages/link/16-2.webp"
     }
   ]
 }

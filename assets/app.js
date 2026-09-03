@@ -83,6 +83,9 @@
         a.title = L.href.replace(/^mailto:/, '').replace(/\?subject=$/, '');
         a.setAttribute('aria-label', a.title);
         if (/^https?:/i.test(L.href)) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+        /* url() in a custom property resolves against the stylesheet, not the
+           page, so hand it an absolute one */
+        if (L.chip) a.style.setProperty('--chip', `url(${new URL(L.chip, location.href).href})`);
         a.style.left   = L.x * 100 + '%';
         a.style.top    = L.y * 100 + '%';
         a.style.width  = L.w * 100 + '%';

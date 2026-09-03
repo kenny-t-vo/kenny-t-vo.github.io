@@ -12,8 +12,8 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fff'/><rect x='6' y='7' width='9' height='18' fill='%230000ee'/><rect x='17' y='7' width='9' height='18' fill='%230000ee'/></svg>">
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/redaction-35-400.woff2" crossorigin>
 <link rel="preload" as="image" href="pages/1.webp">
-<link rel="stylesheet" href="../assets/type.css?v=9">
-<link rel="stylesheet" href="../assets/style.css?v=9">
+<link rel="stylesheet" href="../assets/type.css?v=10">
+<link rel="stylesheet" href="../assets/style.css?v=10">
 <style>
   /* laid out from pages.js: any page count, aspect follows the pdf.
      height is the smaller of what the window and the width allow, so
@@ -27,6 +27,7 @@
                calc((100vw - 2 * var(--pad-x)) / var(--ar, 1.545)));
     background:var(--bg);
     box-shadow:0 0 0 1px var(--page-edge);
+    position:relative;
   }
   .sheet .page{
     position:relative;
@@ -35,8 +36,23 @@
     height:100%;
   }
   .sheet .page img{ display:block; width:100%; height:100%; object-fit:fill; }
-  /* separate sheets, so mark each join */
-  .sheet .page + .page{ box-shadow:-1px 0 0 0 var(--page-edge); }
+
+  /* the same crease the photography book gets, in place of a hard line;
+     strength comes from --gutter-strength on <body data-book="cv"> */
+  .sheet::after{
+    content:"";
+    position:absolute; top:0; bottom:0; left:50%;
+    width:var(--gutter-width);
+    transform:translateX(-50%);
+    pointer-events:none;
+    background:linear-gradient(90deg,
+      rgba(0,0,0,0) 0%,
+      rgba(0,0,0,calc(.055 * var(--gutter-strength))) 42%,
+      rgba(0,0,0,calc(.100 * var(--gutter-strength))) 49.6%,
+      rgba(0,0,0,calc(.110 * var(--gutter-strength))) 50.4%,
+      rgba(0,0,0,calc(.055 * var(--gutter-strength))) 58%,
+      rgba(0,0,0,0) 100%);
+  }
 
   /* upright windows: stack and scroll */
   @media (max-aspect-ratio:1/1){
@@ -50,8 +66,8 @@
       background:none;
       box-shadow:none;
     }
+    .sheet::after{ display:none; }        /* stacked: there is no gutter */
     .sheet .page{ height:auto; box-shadow:0 0 0 1px var(--page-edge); background:var(--bg); }
-    .sheet .page + .page{ box-shadow:0 0 0 1px var(--page-edge); }
     .sheet .page img{ height:auto; }
   }
 </style>
@@ -74,7 +90,7 @@
   <a class="tool invert" id="close" href="../">close.</a>
 </footer>
 
-<script src="pages.js?v=9"></script>
+<script src="pages.js?v=10"></script>
 <script>
 (() => {
   const CV = window.CV || { pages: 0, aspect: 0.7725, links: {} };
@@ -97,8 +113,12 @@
       const a = document.createElement('a');
       a.className = 'pin';
       a.href = L.href;
-      a.setAttribute('aria-label', L.href.replace(/^mailto:/, ''));
+      a.title = L.href.replace(/^mailto:/, '');
+      a.setAttribute('aria-label', a.title);
       if (/^https?:/i.test(L.href)) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+      /* url() in a custom property resolves against the stylesheet, not the
+         page, so hand it an absolute one */
+      if (L.chip) a.style.setProperty('--chip', `url(${new URL(L.chip, location.href).href})`);
       a.style.left   = L.x * 100 + '%';
       a.style.top    = L.y * 100 + '%';
       a.style.width  = L.w * 100 + '%';

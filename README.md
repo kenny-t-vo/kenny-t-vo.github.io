@@ -108,6 +108,17 @@ The cost is the reason to do it this way rather than embedding the PDF: about 1.
 for the work samples' ten links, and a few hundred bytes each for the photography's
 one and the cv's three. Nothing is added to the images.
 
+Two things the PDF alone cannot give, so `build.sh` reads the rendered page for
+them. InDesign places its link rectangles against the text frame rather than the
+glyphs, so each rect is re-centred on the ink actually found underneath it — only
+the contiguous run of inked rows straddling the rect's centre, or the line above
+would be swept in with it. And a band laid over a page cannot turn the words
+white the way it does on the index, because they are part of the artwork; so the
+patch is rendered inverted and recoloured at build time — paper to blue, ink to
+white, as a ramp rather than a threshold so the type keeps its antialiasing — and
+laid over the real one on hover. Fourteen of those chips across the three
+documents come to 56 KB.
+
 Links are live in the reading view, not in the zoom lens, where dragging to pan
 would fire them by accident. If `pypdf` is missing the build still succeeds and
 says so, it just carries no links.

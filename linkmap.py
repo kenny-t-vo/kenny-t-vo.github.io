@@ -66,3 +66,137 @@ def extract(pdf_path, leaves=1):
 
 def count(links):
     return sum(len(v) for v in links.values())
+
+
+# ── snapping to the ink, and rendering the highlight chip ────────────────────
+#
+# Two problems the PDF alone cannot solve. Its link rectangles are placed by
+# InDesign against the text frame, not the glyphs, so they sit a little off
+# centre. And a band laid over a page image cannot turn the words white the way
+# it does on the index, because they are baked into the artwork.
+#
+# Both are answered by looking at the rendered page. The ink tells us where the
+# words actually are, and once we know that we can render the inverted patch
+# once, at build time, instead of asking the browser to do it live.
+
+_BAND_OVER_INK = 1.28   # band height ÷ ink height, matching the index's ratio
+_SIDE_OVER_INK = 0.16   # left/right breathing room, as a fraction of ink height
+_INK_MAX_LUM   = 0.75   # darker than this counts as ink
+_PAPER_MIN     = 0.50   # a chip is only sensible if the region is mostly paper
+
+
+def _luma(p):
+    return (0.2126 * p[0] + 0.7152 * p[1] + 0.0722 * p[2]) / 255
+
+
+def _ink_box(im, rect):
+    """The link's own line of ink, as a pixel box.
+
+    Rows are scanned only inside the rectangle's x-range, and only the
+    contiguous run of inked rows straddling its centre is kept — otherwise the
+    line above or below gets swept in with it.
+    """
+    W, H = im.size
+    rx0, ry0 = rect["x"] * W, rect["y"] * H
+    rw, rh = rect["w"] * W, rect["h"] * H
+    wy0, wy1 = max(0, int(ry0 - rh * 0.6)), min(H, int(ry0 + rh * 1.6))
+    x0, x1 = max(0, int(rx0)), min(W, int(rx0 + rw))
+    if x1 <= x0 or wy1 <= wy0:
+        return None
+
+    crop = im.crop((x0, wy0, x1, wy1))
+    px = crop.load()
+    inked = [any(_luma(px[x, y]) < _INK_MAX_LUM for x in range(crop.width))
+             for y in range(crop.height)]
+    if not any(inked):
+        return None
+
+    centre = int(ry0 + rh / 2) - wy0
+    if not (0 <= centre < len(inked)) or not inked[centre]:
+        centre = min((i for i, v in enumerate(inked) if v),
+                     key=lambda i: abs(i - centre))
+    top = centre
+    while top > 0 and inked[top - 1]:
+        top -= 1
+    bot = centre
+    while bot < len(inked) - 1 and inked[bot + 1]:
+        bot += 1
+
+    cols = [x for y in range(top, bot + 1) for x in range(crop.width)
+            if _luma(px[x, y]) < _INK_MAX_LUM]
+    if not cols:
+        return None
+    return (x0 + min(cols), wy0 + top, x0 + max(cols) + 1, wy0 + bot + 1)
+
+
+def _chip(crop):
+    """Invert the patch and recolour it: paper becomes the link blue, ink
+    becomes white. Done as a ramp rather than a threshold, so the type keeps
+    its antialiasing instead of going jagged."""
+    g = crop.convert("L")
+    light = g.point(lambda v: 255 - v)                       # ink -> bright
+    blue = g.point(lambda v: round(238 + 17 * (255 - v) / 255))
+    from PIL import Image
+    return Image.merge("RGB", (light, light, blue))
+
+
+def fit_to_ink(links, leaf_image, chip_dir, chip_url):
+    """Re-centre every rect on its ink and render its highlight chip.
+
+    `leaf_image(n)` hands back the full-resolution render of leaf n, or None.
+    Returns a fresh links dict; rects that cannot be resolved are passed
+    through untouched so a link is never lost to this step.
+    """
+    import os, subprocess
+    os.makedirs(chip_dir, exist_ok=True)
+    out = {}
+
+    for leaf, items in links.items():
+        im = leaf_image(int(leaf))
+        if im is None:
+            out[leaf] = items
+            continue
+        W, H = im.size
+
+        boxes = [_ink_box(im, r) for r in items]
+        # links sharing a rect height share a text run: give them one band
+        # height, so a descender in one of them cannot make it taller
+        tallest = {}
+        for r, b in zip(items, boxes):
+            if b:
+                k = round(r["h"] * H)
+                tallest[k] = max(tallest.get(k, 0), b[3] - b[1])
+
+        fitted = []
+        for i, (r, b) in enumerate(zip(items, boxes)):
+            if not b:
+                fitted.append(r)
+                continue
+            ink_h = tallest[round(r["h"] * H)]
+            pad_v = ink_h * (_BAND_OVER_INK - 1) / 2
+            pad_h = ink_h * _SIDE_OVER_INK
+            cy = (b[1] + b[3]) / 2
+            x0 = max(0, b[0] - pad_h)
+            x1 = min(W, b[2] + pad_h)
+            y0 = max(0, cy - ink_h / 2 - pad_v)
+            y1 = min(H, cy + ink_h / 2 + pad_v)
+
+            entry = dict(r)
+            entry.update(x=round(x0 / W, 5), y=round(y0 / H, 5),
+                         w=round((x1 - x0) / W, 5), h=round((y1 - y0) / H, 5))
+
+            patch = im.crop((int(x0), int(y0), int(x1), int(y1)))
+            paper = sum(1 for p in patch.getdata() if _luma(p) > 0.78)
+            if paper / max(1, patch.width * patch.height) >= _PAPER_MIN:
+                name = f"{leaf}-{i}.webp"
+                tmp = f"{chip_dir}/.{leaf}-{i}.png"
+                _chip(patch).save(tmp)          # Pillow here has no webp writer
+                subprocess.run(["cwebp", "-quiet", "-lossless", "-m", "6",
+                                "-metadata", "none", tmp,
+                                "-o", f"{chip_dir}/{name}"], check=True)
+                os.remove(tmp)
+                entry["chip"] = f"{chip_url}/{name}"
+            fitted.append(entry)
+        out[leaf] = fitted
+
+    return out
