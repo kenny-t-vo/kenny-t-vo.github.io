@@ -71,7 +71,7 @@ body{
 
 .book.zoomable .leaf{ cursor:zoom-in; }
 
-/* invisible link overlays. ::after widens the tap area without moving the
+/* Invisible link overlays. ::after widens the tap area without moving the
    box; kept small because some links sit a few points apart. */
 .pin{
   position:absolute;
@@ -79,10 +79,21 @@ body{
   z-index:2;
   text-decoration:none;
   cursor:pointer;
-  transition:background var(--fade) ease;
 }
-.pin::after{ content:""; position:absolute; inset:-2px; }
-.pin:hover{ background:rgba(0,0,238,.10); }
+.pin::after{ content:""; position:absolute; inset:-2px; }   /* tap area */
+
+/* ::before is the same band every other link on the site gets. These words are
+   printed into the image and cannot turn white, so the band covers them while
+   hovered; the title attribute carries the destination in the meantime. */
+.pin::before{
+  content:"";
+  position:absolute;
+  inset:var(--hl-trim) calc(-1 * var(--hl-bleed));
+  background:var(--blue);
+  opacity:0;
+  transition:opacity var(--fade) ease;
+}
+.pin:hover::before, .pin:focus-visible::before{ opacity:1; }
 .pin:focus-visible{ outline:1px solid var(--blue); outline-offset:1px; }
 
 /* the crease; --gutter-strength 0 removes it */
@@ -158,10 +169,8 @@ body.veiled .bar, body.veiled .edge{ opacity:0 !important; pointer-events:none; 
   text-decoration-thickness:1px;
 }
 .tool:focus-visible{ outline:1px solid var(--blue); outline-offset:3px; }
-.tool[aria-pressed="true"]{
-  background:var(--blue); color:#fff;
-  text-decoration:none; box-shadow:0 0 0 .16em var(--blue);
-}
+.tool[aria-pressed="true"]{ color:#fff; text-decoration:none; }
+.tool[aria-pressed="true"]::before{ opacity:1; }
 
 .counter{
   font:var(--t5)/1 var(--body);

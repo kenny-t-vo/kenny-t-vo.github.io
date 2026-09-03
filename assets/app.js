@@ -79,7 +79,9 @@
         const a = document.createElement('a');
         a.className = 'pin';
         a.href = L.href;
-        a.setAttribute('aria-label', L.href.replace(/^mailto:/, ''));
+        /* the band covers the printed words while hovered, so say where it goes */
+        a.title = L.href.replace(/^mailto:/, '').replace(/\?subject=$/, '');
+        a.setAttribute('aria-label', a.title);
         if (/^https?:/i.test(L.href)) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
         a.style.left   = L.x * 100 + '%';
         a.style.top    = L.y * 100 + '%';

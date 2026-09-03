@@ -54,6 +54,13 @@
   --s3:22px;
   --s4:40px;
   --s5:72px;
+
+  /* ── the hover highlight ──────────────────────────────────────────
+     trim comes off the top AND the bottom, so the band ends up twice
+     this much shorter than the line box: 5% here = 10% shorter.
+     bleed is breathing room on the left and right.                   */
+  --hl-trim:5%;
+  --hl-bleed:.16em;
 }
 
 *{ box-sizing:border-box; margin:0; padding:0; }
@@ -71,9 +78,21 @@ a{ color:var(--blue); text-decoration:underline; text-underline-offset:2px;
 a:visited{ color:var(--purple); }
 ::selection{ background:var(--blue); color:#fff; }
 
-/* box-shadow, not padding, so hover does not reflow the line */
-.invert{ justify-self:start; }
+/* The one accent move: invert whatever you are about to open. The band is an
+   absolutely positioned pseudo-element rather than padding or a box-shadow.
+   Padding reflowed the line; a box-shadow's spread is uniform, so it could not
+   be made shorter vertically than it is wide. This can, and still moves
+   nothing on the page. */
+.invert{ position:relative; justify-self:start; }
+.invert::before{
+  content:"";
+  position:absolute;
+  inset:var(--hl-trim) calc(-1 * var(--hl-bleed));
+  background:var(--blue);
+  z-index:-1;
+  opacity:0;
+}
+.invert:hover::before, .invert:focus-visible::before{ opacity:1; }
 .invert:hover, .invert:focus-visible{
-  background:var(--blue); color:#fff; text-decoration:none; outline:none;
-  box-shadow:0 0 0 .16em var(--blue);
+  color:#fff; text-decoration:none; outline:none;
 }
