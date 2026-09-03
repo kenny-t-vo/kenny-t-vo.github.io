@@ -8,10 +8,10 @@ window.BOOK = {
   links: {
   "32": [
     {
-      "x": 0.35554,
-      "y": 0.63807,
-      "w": 0.14931,
-      "h": 0.01331,
+      "x": 0.35559,
+      "y": 0.63654,
+      "w": 0.1492,
+      "h": 0.01636,
       "href": "mailto:kenny.t.vo%40outlook.com?subject=",
       "chip": "pages/link/32-0.webp"
     }

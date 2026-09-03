@@ -56,10 +56,12 @@
   --s5:72px;
 
   /* ── the hover highlight ──────────────────────────────────────────
-     trim comes off the top AND the bottom, so the band ends up twice
-     this much shorter than the line box: 5% here = 10% shorter.
-     bleed is breathing room on the left and right.                   */
-  --hl-trim:5%;
+     Height is set in em and centred on the text, NOT trimmed off the
+     line box — the viewer chrome runs at line-height 1 and the index
+     at 1.35 and 1.9, so anything measured against the line box comes
+     out a different size in each place. In em it is one scale
+     everywhere. Bleed is breathing room on the left and right.       */
+  --hl-height:1.55em;
   --hl-bleed:.16em;
 }
 
@@ -87,7 +89,11 @@ a:visited{ color:var(--purple); }
 .invert::before{
   content:"";
   position:absolute;
-  inset:var(--hl-trim) calc(-1 * var(--hl-bleed));
+  left:calc(-1 * var(--hl-bleed));
+  right:calc(-1 * var(--hl-bleed));
+  top:50%;
+  height:var(--hl-height);
+  transform:translateY(-50%);
   background:var(--blue);
   z-index:-1;
   opacity:0;

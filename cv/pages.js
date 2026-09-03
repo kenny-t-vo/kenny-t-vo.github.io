@@ -6,26 +6,26 @@ window.CV = {
   links: {
   "1": [
     {
-      "x": 0.11502,
-      "y": 0.13737,
-      "w": 0.17896,
-      "h": 0.01533,
+      "x": 0.11326,
+      "y": 0.12854,
+      "w": 0.18247,
+      "h": 0.03299,
       "href": "https://www.linkedin.com/in/kenny-t-vo/",
       "chip": "pages/link/1-0.webp"
     },
     {
-      "x": 0.30502,
-      "y": 0.13737,
-      "w": 0.15596,
-      "h": 0.01533,
+      "x": 0.30326,
+      "y": 0.12854,
+      "w": 0.15947,
+      "h": 0.03299,
       "href": "mailto:kenny.t.vo@outlook.com",
       "chip": "pages/link/1-1.webp"
     },
     {
-      "x": 0.47152,
-      "y": 0.13737,
-      "w": 0.18096,
-      "h": 0.01533,
+      "x": 0.46976,
+      "y": 0.12854,
+      "w": 0.18447,
+      "h": 0.03299,
       "href": "https://kenny-t-vo.github.io/",
       "chip": "pages/link/1-2.webp"
     }

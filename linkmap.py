@@ -79,8 +79,13 @@ def count(links):
 # words actually are, and once we know that we can render the inverted patch
 # once, at build time, instead of asking the browser to do it live.
 
-_BAND_OVER_INK = 1.28   # band height ÷ ink height, matching the index's ratio
-_SIDE_OVER_INK = 0.16   # left/right breathing room, as a fraction of ink height
+# The band is sized against the PDF's rect height, not the ink. Ink height moves
+# with whichever glyphs a link happens to contain — "linkedin." has no descender
+# and would come out shorter than "work samples, 2026." beside it — whereas the
+# rect is constant across a text run. 1.25x the rect lands on the same 1.55em the
+# rest of the site uses; the ink is still what the band gets centred on.
+_BAND_OVER_RECT = 1.25
+_SIDE_OVER_RECT = 0.124
 _INK_MAX_LUM   = 0.75   # darker than this counts as ink
 _PAPER_MIN     = 0.50   # a chip is only sensible if the region is mostly paper
 
@@ -129,6 +134,23 @@ def _ink_box(im, rect):
     return (x0 + min(cols), wy0 + top, x0 + max(cols) + 1, wy0 + bot + 1)
 
 
+def _isolate(patch, keep_top, keep_bottom):
+    """White out everything above and below the link's own line of type.
+
+    The band is taller than the ink, so on a tight-leaded page it reaches into
+    the line above. Without this the chip inverts that neighbour too and shows
+    a slice of it, upside-down in white, whenever the link is hovered.
+    """
+    from PIL import ImageDraw
+    out = patch.copy()
+    d = ImageDraw.Draw(out)
+    if keep_top > 0:
+        d.rectangle([0, 0, out.width, keep_top - 1], fill=(255, 255, 255))
+    if keep_bottom < out.height:
+        d.rectangle([0, keep_bottom, out.width, out.height], fill=(255, 255, 255))
+    return out
+
+
 def _chip(crop):
     """Invert the patch and recolour it: paper becomes the link blue, ink
     becomes white. Done as a ramp rather than a threshold, so the type keeps
@@ -147,7 +169,11 @@ def fit_to_ink(links, leaf_image, chip_dir, chip_url):
     Returns a fresh links dict; rects that cannot be resolved are passed
     through untouched so a link is never lost to this step.
     """
-    import os, subprocess
+    import glob, os, subprocess
+    # clear first: an edition with fewer links would otherwise leave the old
+    # chips behind for good, and leaf numbering shifts between editions
+    for stale in glob.glob(f"{chip_dir}/*.webp"):
+        os.remove(stale)
     os.makedirs(chip_dir, exist_ok=True)
     out = {}
 
@@ -159,33 +185,27 @@ def fit_to_ink(links, leaf_image, chip_dir, chip_url):
         W, H = im.size
 
         boxes = [_ink_box(im, r) for r in items]
-        # links sharing a rect height share a text run: give them one band
-        # height, so a descender in one of them cannot make it taller
-        tallest = {}
-        for r, b in zip(items, boxes):
-            if b:
-                k = round(r["h"] * H)
-                tallest[k] = max(tallest.get(k, 0), b[3] - b[1])
 
         fitted = []
         for i, (r, b) in enumerate(zip(items, boxes)):
             if not b:
                 fitted.append(r)
                 continue
-            ink_h = tallest[round(r["h"] * H)]
-            pad_v = ink_h * (_BAND_OVER_INK - 1) / 2
-            pad_h = ink_h * _SIDE_OVER_INK
-            cy = (b[1] + b[3]) / 2
+            rect_h = r["h"] * H
+            band_h = rect_h * _BAND_OVER_RECT
+            pad_h = rect_h * _SIDE_OVER_RECT
+            cy = (b[1] + b[3]) / 2          # centred on the ink, sized off the rect
             x0 = max(0, b[0] - pad_h)
             x1 = min(W, b[2] + pad_h)
-            y0 = max(0, cy - ink_h / 2 - pad_v)
-            y1 = min(H, cy + ink_h / 2 + pad_v)
+            y0 = max(0, cy - band_h / 2)
+            y1 = min(H, cy + band_h / 2)
 
             entry = dict(r)
             entry.update(x=round(x0 / W, 5), y=round(y0 / H, 5),
                          w=round((x1 - x0) / W, 5), h=round((y1 - y0) / H, 5))
 
             patch = im.crop((int(x0), int(y0), int(x1), int(y1)))
+            patch = _isolate(patch, int(b[1] - y0), int(b[3] - y0))
             paper = sum(1 for p in patch.getdata() if _luma(p) > 0.78)
             if paper / max(1, patch.width * patch.height) >= _PAPER_MIN:
                 name = f"{leaf}-{i}.webp"
