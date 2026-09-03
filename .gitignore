@@ -1,2 +1,4 @@
 .DS_Store
 *.indd
+__pycache__/
+*.pyc
