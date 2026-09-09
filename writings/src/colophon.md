@@ -15,9 +15,11 @@ Young and Jeremy Mickel for an exhibition at MoMA PS1. It is released under the
 Open Font License, so it is served from this domain rather than borrowed from a
 CDN.
 
-Body text asks for Plantin MT Pro first and falls back to Times New Roman.
-That is a closer relative than it sounds: Times was drawn from Plantin in 1932,
-so the fallback is the original's own descendant rather than a substitute.[^1]
+Body text is Plantin MT Pro Light, and no file for it is served from here —
+Plantin is licensed for the desktop, so it appears only for readers who already
+have it installed. Everyone else gets Times New Roman, which is a closer
+relative than it sounds: Times was drawn from Plantin in 1932, so the fallback
+is the original's own descendant rather than a substitute.[^1]
 
 [^1]: Stanley Morison's brief to Victor Lardent at *The Times* used Plantin as
 the starting point, narrowed and sharpened for newsprint.

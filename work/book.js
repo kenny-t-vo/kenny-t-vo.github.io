@@ -90,7 +90,7 @@ window.BOOK = {
       "y": 0.68186,
       "w": 0.07728,
       "h": 0.01636,
-      "href": "https://kenny-t-vo.github.io/kennyvophotography/",
+      "href": "https://kenny-t-vo.github.io/photography",
       "chip": "pages/link/16-1.webp"
     },
     {

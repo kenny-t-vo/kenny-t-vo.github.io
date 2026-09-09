@@ -12,6 +12,27 @@
   font-display:swap;
 }
 
+/* Plantin MT Pro, only if the reader already has it installed. Adobe Fonts
+   licenses it for desktop use, so no file is served from here — local() or
+   Times. Chrome exposes only the "Plantin MT Pro" family, not the Light and
+   Semibold subfamilies, so the faces are named by PostScript name and hung
+   on weights: 400 is Light, 600 is Semibold. */
+@font-face{
+  font-family:"Plantin";
+  src:local("PlantinMTPro-Light");
+  font-weight:400; font-style:normal;
+}
+@font-face{
+  font-family:"Plantin";
+  src:local("PlantinMTPro-LightItalic");
+  font-weight:400; font-style:italic;
+}
+@font-face{
+  font-family:"Plantin";
+  src:local("PlantinMTPro-Semibold");
+  font-weight:600; font-style:normal;
+}
+
 :root{
   /* ── ground and ink ───────────────────────────────────────────── */
   --bg:#fff;
@@ -31,7 +52,7 @@
      body:    Plantin MT Pro, else Times New Roman (drawn from Plantin).
      figures use the body face.                                          */
   --display:"Redaction 35","Times New Roman",Times,serif;
-  --body:"Plantin MT Pro","Plantin MT Pro Light","Times New Roman",Times,
+  --body:"Plantin","Plantin MT Pro","Times New Roman",Times,
          "Liberation Serif","Hiragino Mincho ProN","Yu Mincho",serif;
 
   /* ── six steps ────────────────────────────────────────────────────
