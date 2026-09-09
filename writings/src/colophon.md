@@ -4,9 +4,9 @@ date: 2026-09-09
 standfirst: how this site is set.
 ---
 
-Everything here is static. There is no build server, no framework, and nothing
-that runs on the page except the spread viewers, which need to size a book to
-whatever window it lands in.
+It is all static files — no build server, no framework, and nothing running on
+the page except the spread viewers, which have to size a book to whatever window
+it lands in.
 
 ## the faces
 
@@ -22,7 +22,7 @@ so the fallback is the original's own descendant rather than a substitute.[^1]
 [^1]: Stanley Morison's brief to Victor Lardent at *The Times* used Plantin as
 the starting point, narrowed and sharpened for newsprint.
 
-Sizes come from six steps and nothing sits between them — 30, 18, 14, 12.5, 11
+Sizes come from six steps and nothing sits between them — 22, 16, 14, 12.5, 11
 and 10.5 pixels. Spacing runs on a single rhythm. Both are variables, so a
 change is one edit rather than forty.
 

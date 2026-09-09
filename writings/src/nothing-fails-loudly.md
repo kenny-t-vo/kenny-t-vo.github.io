@@ -1,7 +1,7 @@
 ---
 title: nothing fails loudly.
 date: 2026-09-09
-standfirst: the navier-stokes proof, and why verification is the variable.
+standfirst: the ai argument turns on verification, and most work cannot check itself.
 ---
 For years I've believed the race to general intelligence would be the largest shift in a century, somewhere near electrification. I believed it while doubting that language models were the architecture that would get us there. This week I stopped doubting. The reason is narrower than the headlines, and the narrow version is the frightening one.
 
@@ -13,7 +13,7 @@ Two caveats. The first: the construction requires an external force pushing on t
 
 The second: the forced route was not the model's idea. Tristan Buckmaster, an NYU mathematician, says he and Levent Alpöge had spent months on the forced version of the closely related Euler equations, on [a line opened by two other mathematicians](https://fortune.com/2026/09/08/openai-says-it-cracked-navier-stokes-math-grand-challenge-buckmaster-accusation-cheating-intimidation-tao-lament/), and that this is not a direction you arrive at in a few days from the bare problem statement. OpenAI's own writeup says its effort began on September 1 after hearing a rumor it later traced to them. The model did not choose the target. It was pointed at one. Autonomous problem selection is the capability that would justify panic, and nothing here tested it.
 
-Strip both caveats away and something new remains, but it is not that the model got smart. The tell is the shape of the run. Ten thousand agents, three hundred billion tokens, then a proof assistant to certify whatever survived. Most of that output was wrong. The value came from generating candidates at a volume no human field can match and letting a cheap mechanical check discard the failures. That is search, very good search, at a scale only a frontier lab can afford, aimed at a target where correctness is machine-decidable. OpenAI did not trust the output on its own terms either. They formalized it before they announced it.
+Strip both caveats away and something new remains, but it is not that the model got smart. The tell is the shape of the run. Ten thousand agents, one hundred and thirty billion tokens, then a proof assistant to certify whatever survived. Most of that output was wrong. The value came from generating candidates at a volume no human field can match and letting a cheap mechanical check discard the failures. That is search, very good search, at a scale only a frontier lab can afford, aimed at a target where correctness is machine-decidable. OpenAI did not trust the output on its own terms either. They formalized it before they announced it.
 
 So the question I had been asking, scaling theater or real emergence, was the wrong axis. The variable is verification. Parallel generation converts into knowledge only where an oracle downstream can separate truth from confident garbage, cheaply and at volume. Formal math has that oracle. Take it away and the same system is a very fast machine for producing plausible nonsense. Math is first because math can check itself.
 

@@ -145,7 +145,7 @@ def build_piece(path, md):
 
     head = [f"  <h1>{html.escape(title)}</h1>"]
     if iso:
-        head.append(f'  <p class="dateline">{display_date(iso)}</p>')
+        head.append(f'  <p class="dateline">{display_date(iso)}.</p>')
     if stand:
         head.append(f'  <p class="standfirst">{html.escape(stand)}</p>')
 
