@@ -170,7 +170,7 @@ def build_index(pieces):
                 f'    <li>\n'
                 f'      <div class="row">'
                 f'<a class="name invert" href="{p["slug"]}/">{html.escape(p["title"])}</a>'
-                f'<span class="when">{display_date(p["iso"])}</span></div>'
+                f'<span class="when">{display_date(p["iso"])}.</span></div>'
                 f'{about}\n    </li>')
         body = ('  <h1>writings.</h1>\n\n  <ul class="pieces">\n'
                 + "\n".join(rows) + "\n  </ul>")

@@ -1,7 +1,7 @@
 ---
 title: colophon.
 date: 2026-09-09
-standfirst: how this site is set, and how pages get made.
+standfirst: how this site is set.
 ---
 
 Everything here is static. There is no build server, no framework, and nothing
