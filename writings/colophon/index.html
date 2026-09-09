@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>colophon. — kenny vo.</title>
+<meta name="description" content="how this site is set, and how pages get made.">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:title" content="colophon.">
+<meta property="og:description" content="how this site is set, and how pages get made.">
+<meta property="og:type" content="article">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fff'/><rect x='6' y='7' width='9' height='18' fill='%230000ee'/><rect x='17' y='7' width='9' height='18' fill='%230000ee'/></svg>">
+<link rel="preload" as="font" type="font/woff2" href="../../assets/fonts/redaction-35-400.woff2" crossorigin>
+<link rel="stylesheet" href="../../assets/type.css?v=12">
+<link rel="stylesheet" href="../../assets/writing.css?v=12">
+</head>
+<body>
+<div class="column">
+
+  <nav class="masthead">
+    <a class="invert" href="../../">kenny vo.</a>
+    <a class="invert" href="../">writings.</a>
+  </nav>
+
+  <h1>colophon.</h1>
+  <p class="dateline">9 september 2026</p>
+  <p class="standfirst">how this site is set, and how pages get made.</p>
+
+  <article>
+<p>Everything here is static. There is no build server, no framework, and nothing
+that runs on the page except the spread viewers, which need to size a book to
+whatever window it lands in.</p>
+<h2>the faces</h2>
+<p>Titles are set in <a href="https://www.redaction.us/">Redaction 35</a>, drawn by Forest
+Young and Jeremy Mickel for an exhibition at MoMA PS1. It is released under the
+Open Font License, so it is served from this domain rather than borrowed from a
+CDN.</p>
+<p>Body text asks for Plantin MT Pro first and falls back to Times New Roman.
+That is a closer relative than it sounds: Times was drawn from Plantin in 1932,
+so the fallback is the original&rsquo;s own descendant rather than a substitute.<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup></p>
+<p>Sizes come from six steps and nothing sits between them — 30, 18, 14, 12.5, 11
+and 10.5 pixels. Spacing runs on a single rhythm. Both are variables, so a
+change is one edit rather than forty.</p>
+<h2>the pages</h2>
+<p>The two link colours are the browser defaults, <code>#0000ee</code> and <code>#551a8b</code>, and they
+carry fixed meanings: blue is something you can open, purple something you have.
+Interface chrome is exempt, because a back link points at a page you have by
+definition already seen.</p>
+<blockquote>
+<p>Hairlines do the separating. Nothing has a shadow, a gradient, or a rounded
+corner except an image.</p>
+</blockquote>
+<p>The portfolios are PDFs rendered to WebP at three resolutions — one to read, one
+to zoom into, one for the index — and their hyperlinks are lifted out of the PDF
+and laid back over the page, so a reference printed in blue is still a reference
+you can follow.</p>
+<h2>writing</h2>
+<p>Pieces like this one are markdown files. They support what an essay needs:</p>
+<ul>
+<li>headings, emphasis, and inline links</li>
+<li>footnotes, which collect under a rule at the end</li>
+<li>block quotes, lists, and tables</li>
+<li>images with captions</li>
+</ul>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Stanley Morison&rsquo;s brief to Victor Lardent at <em>The Times</em> used Plantin as
+the starting point, narrowed and sharpened for newsprint.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+  </article>
+
+</div>
+</body>
+</html>

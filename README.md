@@ -123,6 +123,44 @@ Links are live in the reading view, not in the zoom lens, where dragging to pan
 would fire them by accident. If `pypdf` is missing the build still succeeds and
 says so, it just carries no links.
 
+## Writing
+
+Pieces live in `writings/src/` as markdown, one file per piece. Publish with:
+
+```bash
+./writings.py
+```
+
+The filename becomes the URL — `on-drawing.md` is served at `/writings/on-drawing/`
+— and the index at `/writings/` is rebuilt from whatever is in the folder, newest
+first. Deleting a source deletes its page on the next run. A file whose name starts
+with `_` is a draft and is skipped.
+
+Front matter is optional:
+
+```
+---
+title: on drawing.
+date: 2026-09-09
+standfirst: one line under the title.
+---
+```
+
+Without it the first heading becomes the title and the file's modification date is
+used. Pictures go in `writings/src/images/` and are referenced as
+`images/name.jpg`; an image alone in a paragraph becomes a figure, and its markdown
+title becomes the caption:
+
+```markdown
+![alt text](images/name.jpg "the caption.")
+```
+
+Footnotes collect under a rule at the end, which is where a bibliography goes.
+Links, block quotes, lists, tables and code all render. Requires
+`pip3 install markdown`. A `.docx` dropped in the folder is converted first if
+pandoc is installed (`brew install pandoc`); markdown is the better input, since
+Word carries formatting that fights a fixed measure.
+
 ## The knobs
 
 The top of `assets/style.css` is a block of variables, and the gutter — the crease

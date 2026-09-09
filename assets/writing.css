@@ -1,0 +1,149 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Reading pages. Requires assets/type.css for the families, sizes and
+   colours. No script: these are documents, not an interface.
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root{
+  --measure:32em;                    /* ~66 characters at --t3 */
+  --frame:clamp(20px,5vw,44px);
+  --lede:1.7;                        /* body leading */
+}
+
+body{
+  padding:calc(var(--frame) * 1.6) var(--frame) calc(var(--frame) * 2.6);
+}
+
+.column{ width:min(var(--measure),100%); margin:0 auto; }
+
+/* ── masthead, in flow rather than fixed: this is a page to read ──── */
+
+.masthead{
+  display:flex; gap:.55em; align-items:baseline;
+  margin-bottom:calc(var(--s5) * 1.2);
+  font:400 var(--t2)/1 var(--display);
+  letter-spacing:.004em;
+}
+.masthead .here{ color:var(--dim); }
+
+/* ── the piece ────────────────────────────────────────────────────── */
+
+/* cap height seated on the space above, not the box top */
+h1{
+  font:400 var(--t1)/1.06 var(--display);
+  letter-spacing:-.012em;
+  margin:-0.201em 0 var(--s2);
+}
+.dateline{
+  font-size:var(--t6); letter-spacing:.09em; color:var(--faint);
+  margin-bottom:var(--s3);
+}
+.standfirst{
+  font-size:var(--t4); line-height:1.6; color:var(--dim);
+  margin-bottom:var(--s4);
+}
+
+article{ font-size:var(--t3); line-height:var(--lede); }
+article > * + *{ margin-top:1.05em; }
+
+article h2{
+  font:400 var(--t2)/1.25 var(--display);
+  letter-spacing:.004em;
+  margin-top:var(--s4);
+}
+article h3{
+  font:400 var(--t3)/1.35 var(--display);
+  letter-spacing:.01em;
+  margin-top:var(--s3);
+}
+
+/* markers hang outside, so the text stays flush with the paragraphs */
+article ul, article ol{ padding-left:1.4em; }
+article li + li{ margin-top:.35em; }
+article ul{ list-style:square; }
+
+article blockquote{
+  padding-left:1.4em;
+  border-left:1px solid var(--rule);
+  color:var(--dim);
+}
+
+article hr{ border:0; border-top:1px solid var(--rule); margin:var(--s4) 0; }
+
+article strong{ font-weight:600; }
+article code{
+  font:0.92em/1 ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  background:var(--wash); padding:.15em .3em;
+}
+article pre{
+  background:var(--wash); padding:var(--s2); overflow-x:auto;
+  font-size:var(--t5); line-height:1.5;
+}
+article pre code{ background:none; padding:0; font-size:1em; }
+
+/* an inline link can wrap across lines, so the highlight is a background
+   on the text itself — a positioned band would cover the bounding box of
+   both lines instead of the words. no padding, so nothing reflows. */
+article a:hover, article a:focus-visible,
+.footnote a:hover, .footnote a:focus-visible{
+  background:var(--blue); color:#fff;
+  text-decoration:none; outline:none;
+  box-decoration-break:clone; -webkit-box-decoration-break:clone;
+}
+
+/* ── figures ──────────────────────────────────────────────────────── */
+
+article figure{ margin-top:var(--s4); margin-bottom:var(--s4); }
+article figure img{
+  display:block; width:100%; height:auto;
+  box-shadow:0 0 0 1px var(--page-edge, var(--rule));
+}
+article figcaption{
+  margin-top:var(--s1);
+  font-size:var(--t6); letter-spacing:.06em; line-height:1.5;
+  color:var(--faint);
+}
+
+/* ── notes and references ─────────────────────────────────────────── */
+
+.footnote{
+  margin-top:var(--s5);
+  padding-top:var(--s2);
+  border-top:1px solid var(--rule2);
+  font-size:var(--t5);
+  line-height:1.6;
+  color:var(--dim);
+}
+.footnote hr{ display:none; }        /* the extension emits its own */
+.footnote ol{ padding-left:1.6em; }
+.footnote li + li{ margin-top:.5em; }
+.footnote li p{ margin:0; }
+.footnote li p + p{ margin-top:.3em; }
+.footnote-backref{ text-decoration:none; }
+
+/* superscript markers, kept off the leading */
+sup{ font-size:.72em; line-height:0; vertical-align:.42em; }
+
+/* ── the index of pieces ──────────────────────────────────────────── */
+
+.pieces{ list-style:none; padding:0; margin-top:var(--s4); }
+.pieces li + li{ margin-top:var(--s4); }
+.pieces .row{
+  display:grid; grid-template-columns:1fr auto;
+  gap:1em; align-items:baseline;
+}
+.pieces .name{ font:400 var(--t2)/1.25 var(--display); letter-spacing:.004em; }
+.pieces .when{ font-size:var(--t5); color:var(--faint); white-space:nowrap; }
+.pieces .about{
+  margin-top:var(--s1);
+  font-size:var(--t4); line-height:1.6; color:var(--dim);
+}
+.empty{ font-size:var(--t4); color:var(--dim); }
+
+footer.tail{
+  margin-top:calc(var(--s5) * 1.2);
+  font-size:var(--t6); letter-spacing:.09em; color:var(--faint);
+}
+
+@media (max-width:520px){
+  :root{ --lede:1.65; }
+}
