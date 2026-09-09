@@ -243,6 +243,12 @@ cv/
   pages.js            generated: page count, aspect, links
   pages/              generated: one lossless tier
   Vo_Kenny_CV.pdf     generated: a copy, for the download link
+writings/
+  src/                markdown in, one file per piece; pictures in src/images/
+  index.html          generated: the list
+  <slug>/index.html   generated: one piece
+assets/writing.css    the reading pages
 build.sh              PDF → one document's pages
+writings.py           markdown → the writings pages
 linkmap.py            PDF link annotations → fractions of a leaf
 ```
