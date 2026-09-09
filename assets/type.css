@@ -84,6 +84,11 @@
      everywhere. Bleed is breathing room on the left and right.       */
   --hl-height:1.55em;
   --hl-bleed:.16em;
+
+  /* body tracking. -.01em is -10 in indesign's 1/1000 em units.
+     the display face is not affected: every rule using --display
+     declares its own letter-spacing. */
+  --track:-.01em;
 }
 
 *{ box-sizing:border-box; margin:0; padding:0; }
@@ -92,6 +97,7 @@ body{
   background:var(--bg);
   color:var(--fg);
   font:var(--t3)/1.5 var(--body);
+  letter-spacing:var(--track);
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
 }
