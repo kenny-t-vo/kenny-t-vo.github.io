@@ -4,7 +4,7 @@ date: 2026-09-09
 standfirst: how this site is set.
 ---
 
-It is all static files: no build server, no framework, and nothing running on
+This site has no build server or framework, and nothing running on
 the page except the spread viewers, which have to size a book to whatever window
 it lands in.
 
