@@ -55,6 +55,8 @@ PAGE = """<!doctype html>
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:type" content="article">
+<meta property="og:image" content="https://kenny-t-vo.github.io/assets/social.png">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fff'/><rect x='6' y='7' width='9' height='18' fill='%230000ee'/><rect x='17' y='7' width='9' height='18' fill='%230000ee'/></svg>">
 <link rel="preload" as="font" type="font/woff2" href="{up}assets/fonts/redaction-35-400.woff2" crossorigin>
 <link rel="stylesheet" href="{up}assets/type.css?v={v}">
