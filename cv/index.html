@@ -18,9 +18,8 @@
 <link rel="stylesheet" href="../assets/type.css?v=17">
 <link rel="stylesheet" href="../assets/style.css?v=17">
 <style>
-  /* laid out from pages.js: any page count, aspect follows the pdf.
-     height is the smaller of what the window and the width allow, so
-     sizing needs no script. */
+  /* page count and aspect come from pages.js. height is the smaller of the
+     window height and the width over --ar. */
   .sheet{
     --pad-x:calc(var(--frame) * 1.6);
     --pad-y:calc(var(--frame) * 2.4);
@@ -40,8 +39,7 @@
   }
   .sheet .page img{ display:block; width:100%; height:100%; object-fit:fill; }
 
-  /* the same crease the photography book gets, in place of a hard line;
-     strength comes from --gutter-strength on <body data-book="cv"> */
+  /* the books' crease; strength from --gutter-strength */
   .sheet::after{
     content:"";
     position:absolute; top:0; bottom:0; left:50%;
@@ -119,8 +117,8 @@
       a.title = L.href.replace(/^mailto:/, '');
       a.setAttribute('aria-label', a.title);
       if (/^https?:/i.test(L.href)) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
-      /* url() in a custom property resolves against the stylesheet, not the
-         page, so hand it an absolute one */
+      /* url() in a custom property resolves against the stylesheet's url,
+         so it gets an absolute one */
       if (L.chip) a.style.setProperty('--chip', `url(${new URL(L.chip, location.href).href})`);
       a.style.left   = L.x * 100 + '%';
       a.style.top    = L.y * 100 + '%';
@@ -131,7 +129,7 @@
     sheet.append(page);
   }
 
-  /* esc goes back, or to the index if the page was opened cold */
+  /* esc: back, or home if there is no history */
   addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
     if (history.length > 1) history.back();

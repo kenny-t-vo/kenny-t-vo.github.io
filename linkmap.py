@@ -1,10 +1,8 @@
-"""Lift live hyperlinks out of a PDF.
+"""Read link annotations out of a PDF.
 
-Rasterising a page to WebP drops its link annotations. build.sh extracts them
-here and the viewers overlay transparent anchors on the image.
-
-Coordinates are fractions of a leaf, so they survive render width, display
-size, and zoom.
+Rasterising a page to WebP drops them. build.sh calls this and the viewers
+lay transparent anchors over the page image. Coordinates are fractions of a
+leaf, so render width, display size and zoom don't change them.
 """
 
 
@@ -70,24 +68,16 @@ def count(links):
 
 # ── snapping to the ink, and rendering the highlight chip ────────────────────
 #
-# Two problems the PDF alone cannot solve. Its link rectangles are placed by
-# InDesign against the text frame, not the glyphs, so they sit a little off
-# centre. And a band laid over a page image cannot turn the words white the way
-# it does on the index, because they are baked into the artwork.
-#
-# Both are answered by looking at the rendered page. The ink tells us where the
-# words actually are, and once we know that we can render the inverted patch
-# once, at build time, instead of asking the browser to do it live.
+# InDesign places link rects on the text frame, so each is re-centred on the
+# ink in the rendered page. The words are part of the page image, so the hover
+# state is an inverted copy of the patch, rendered here.
 
-# The band is sized against the PDF's rect height, not the ink. Ink height moves
-# with whichever glyphs a link happens to contain — "linkedin." has no descender
-# and would come out shorter than "work samples, 2026." beside it — whereas the
-# rect is constant across a text run. 1.25x the rect lands on the same 1.55em the
-# rest of the site uses; the ink is still what the band gets centred on.
+# band height comes from the rect, which is constant across a text run; ink
+# height varies with descenders. 1.25 x rect matches the site's 1.55em band.
 _BAND_OVER_RECT = 1.25
-_SIDE_OVER_RECT = 0.124
+_SIDE_OVER_RECT = 0.124  # side padding, x rect height
 _INK_MAX_LUM   = 0.75   # darker than this counts as ink
-_PAPER_MIN     = 0.50   # a chip is only sensible if the region is mostly paper
+_PAPER_MIN     = 0.50   # minimum paper fraction to render a chip
 
 
 def _luma(p):
@@ -95,11 +85,10 @@ def _luma(p):
 
 
 def _ink_box(im, rect):
-    """The link's own line of ink, as a pixel box.
+    """Pixel box of the link's own line of ink.
 
-    Rows are scanned only inside the rectangle's x-range, and only the
-    contiguous run of inked rows straddling its centre is kept — otherwise the
-    line above or below gets swept in with it.
+    Scans rows inside the rect's x-range and keeps only the contiguous run of
+    inked rows through the rect's centre, which excludes adjacent lines.
     """
     W, H = im.size
     rx0, ry0 = rect["x"] * W, rect["y"] * H
@@ -137,9 +126,8 @@ def _ink_box(im, rect):
 def _isolate(patch, keep_top, keep_bottom):
     """White out everything above and below the link's own line of type.
 
-    The band is taller than the ink, so on a tight-leaded page it reaches into
-    the line above. Without this the chip inverts that neighbour too and shows
-    a slice of it, upside-down in white, whenever the link is hovered.
+    The band is taller than the ink and on tight leading reaches the adjacent
+    lines, which would otherwise show inverted in the chip.
     """
     from PIL import ImageDraw
     out = patch.copy()
@@ -152,9 +140,8 @@ def _isolate(patch, keep_top, keep_bottom):
 
 
 def _chip(crop):
-    """Invert the patch and recolour it: paper becomes the link blue, ink
-    becomes white. Done as a ramp rather than a threshold, so the type keeps
-    its antialiasing instead of going jagged."""
+    """Invert and recolour the patch: paper to #0000ee, ink to white, on a
+    linear ramp so the antialiasing survives."""
     g = crop.convert("L")
     light = g.point(lambda v: 255 - v)                       # ink -> bright
     blue = g.point(lambda v: round(238 + 17 * (255 - v) / 255))
@@ -165,13 +152,11 @@ def _chip(crop):
 def fit_to_ink(links, leaf_image, chip_dir, chip_url):
     """Re-centre every rect on its ink and render its highlight chip.
 
-    `leaf_image(n)` hands back the full-resolution render of leaf n, or None.
-    Returns a fresh links dict; rects that cannot be resolved are passed
-    through untouched so a link is never lost to this step.
+    `leaf_image(n)` returns the full-resolution render of leaf n, or None.
+    Returns a new links dict; rects that can't be fitted pass through as is.
     """
     import glob, os, subprocess
-    # clear first: an edition with fewer links would otherwise leave the old
-    # chips behind for good, and leaf numbering shifts between editions
+    # chips are named by leaf and index, which change between editions
     for stale in glob.glob(f"{chip_dir}/*.webp"):
         os.remove(stale)
     os.makedirs(chip_dir, exist_ok=True)

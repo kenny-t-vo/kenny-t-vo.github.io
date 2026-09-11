@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════
-   Reading pages. Requires assets/type.css for the families, sizes and
-   colours. No script: these are documents, not an interface.
+   writing pages. needs assets/type.css for the families, sizes and
+   colours. no script.
    ═══════════════════════════════════════════════════════════════════ */
 
 :root{
@@ -15,7 +15,7 @@ body{
 
 .column{ width:min(var(--measure),100%); margin:0 auto; }
 
-/* ── masthead, in flow rather than fixed: this is a page to read ──── */
+/* ── masthead ─────────────────────────────────────────────────────── */
 
 .masthead{
   display:flex; gap:.55em; align-items:baseline;
@@ -23,11 +23,10 @@ body{
   font:400 var(--t2)/1 var(--display);
   letter-spacing:.004em;
 }
-.masthead .here{ color:var(--dim); }
 
 /* ── the piece ────────────────────────────────────────────────────── */
 
-/* cap height seated on the space above, not the box top */
+/* -.201em = half-leading + (ascent - cap height), this face at 1.06 */
 h1{
   font:400 var(--t1)/1.06 var(--display);
   letter-spacing:-.012em;
@@ -56,7 +55,7 @@ article h3{
   margin-top:var(--s3);
 }
 
-/* markers hang outside, so the text stays flush with the paragraphs */
+/* markers sit in the 1.4em padding */
 article ul, article ol{ padding-left:1.4em; }
 article li + li{ margin-top:.35em; }
 article ul{ list-style:square; }
@@ -80,9 +79,8 @@ article pre{
 }
 article pre code{ background:none; padding:0; font-size:1em; }
 
-/* an inline link can wrap across lines, so the highlight is a background
-   on the text itself — a positioned band would cover the bounding box of
-   both lines instead of the words. no padding, so nothing reflows. */
+/* links in prose can wrap, so the hover is a text background painted per
+   line (box-decoration-break). no padding, so nothing reflows. */
 article a:hover, article a:focus-visible,
 .footnote a:hover, .footnote a:focus-visible{
   background:var(--blue); color:#fff;
@@ -110,14 +108,14 @@ article figcaption{
   line-height:1.6;
   color:var(--dim);
 }
-.footnote hr{ display:none; }        /* the extension emits its own */
+.footnote hr{ display:none; }        /* border-top replaces the extension's hr */
 .footnote ol{ padding-left:1.6em; }
 .footnote li + li{ margin-top:.5em; }
 .footnote li p{ margin:0; }
 .footnote li p + p{ margin-top:.3em; }
 .footnote-backref{ text-decoration:none; }
 
-/* superscript markers, kept off the leading */
+/* line-height 0 keeps superscripts from opening up the line */
 sup{ font-size:.72em; line-height:0; vertical-align:.42em; }
 
 /* ── the index of pieces ──────────────────────────────────────────── */
@@ -135,11 +133,6 @@ sup{ font-size:.72em; line-height:0; vertical-align:.42em; }
   font-size:var(--t4); line-height:1.6; color:var(--dim);
 }
 .empty{ font-size:var(--t4); color:var(--dim); }
-
-footer.tail{
-  margin-top:calc(var(--s5) * 1.2);
-  font-size:var(--t6); letter-spacing:.09em; color:var(--faint);
-}
 
 @media (max-width:520px){
   :root{ --lede:1.65; }

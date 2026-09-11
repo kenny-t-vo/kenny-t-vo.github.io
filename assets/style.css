@@ -1,6 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════
-   THE KNOBS — tunable values.
-   Requires assets/type.css, loaded first, which holds the colour,
+   tunable values. needs assets/type.css loaded first for the colour,
    family and size tokens.
    ═══════════════════════════════════════════════════════════════════ */
 
@@ -22,14 +21,14 @@
   --fade:150ms;               /* the only transition duration used */
 }
 
-/* per book. the viewer reads these from <body data-book="…">. */
+/* per book, keyed on <body data-book> */
 body[data-book="photography"]{ --gutter-strength:.25; }
 body[data-book="cv"]         { --gutter-strength:.25; }
 body[data-book="work"]       { --gutter-strength:0; }    /* off: its spreads
                                                             were drawn flat */
 
 /* ═══════════════════════════════════════════════════════════════════
-   THE VIEWER
+   the viewer
    ═══════════════════════════════════════════════════════════════════ */
 
 html,body{ height:100%; }
@@ -72,8 +71,8 @@ body{
 
 .book.zoomable .leaf{ cursor:zoom-in; }
 
-/* Invisible link overlays. ::after widens the tap area without moving the
-   box; kept small because some links sit a few points apart. */
+/* link overlays. ::after adds 2px of tap area, kept small because links can
+   sit a few points apart. */
 .pin{
   position:absolute;
   display:block;
@@ -81,12 +80,10 @@ body{
   text-decoration:none;
   cursor:pointer;
 }
-.pin::after{ content:""; position:absolute; inset:-2px; }   /* tap area */
+.pin::after{ content:""; position:absolute; inset:-2px; }
 
-/* ::before is the same band every other link gets, except that the words here
-   are baked into the artwork and cannot turn white on their own. build.sh
-   renders that patch inverted and recoloured — paper to blue, ink to white —
-   and it is laid over the real one on hover. */
+/* hover band. the words are part of the page image, so linkmap.py renders an
+   inverted copy of the patch (paper to blue, ink to white) into --chip. */
 .pin::before{
   content:"";
   position:absolute;
@@ -102,7 +99,8 @@ body{
 .pin:focus-visible{ outline:1px solid var(--blue); outline-offset:1px; }
 
 /* the crease; --gutter-strength 0 removes it */
-.book[data-leaves="2"]::after{
+.book[data-leaves="2"]::after,
+.lens__sheet[data-leaves="2"]::after{
   content:"";
   position:absolute; top:0; bottom:0; left:50%;
   width:var(--gutter-width);
@@ -266,22 +264,7 @@ body.veiled .bar, body.veiled .edge{ opacity:0 !important; pointer-events:none; 
   opacity:0; transition:opacity var(--fade) ease;
 }
 .lens__page img.ready{ opacity:1; }
-.lens__sheet[data-leaves="2"]::after{
-  content:"";
-  position:absolute; top:0; bottom:0; left:50%;
-  width:var(--gutter-width);
-  transform:translateX(-50%);
-  pointer-events:none;
-  background:linear-gradient(90deg,
-    rgba(0,0,0,0) 0%,
-    rgba(0,0,0,calc(.055 * var(--gutter-strength))) 42%,
-    rgba(0,0,0,calc(.100 * var(--gutter-strength))) 49.6%,
-    rgba(0,0,0,calc(.110 * var(--gutter-strength))) 50.4%,
-    rgba(0,0,0,calc(.055 * var(--gutter-strength))) 58%,
-    rgba(0,0,0,0) 100%);
-}
-/* phones show one leaf, and nothing else hints that rotating gives a spread.
-   shown once; never on desktop, never again after a spread is seen. */
+/* touch only. shown once, and not after a spread has been seen (app.js). */
 .rotate-hint{
   position:fixed;
   left:0; right:0;

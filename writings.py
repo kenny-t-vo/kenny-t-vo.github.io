@@ -37,7 +37,7 @@ MONTHS = ["january", "february", "march", "april", "may", "june", "july",
 
 
 def asset_version():
-    """The ?v= the rest of the site is on, so these pages never fall behind."""
+    """The asset ?v= from index.html."""
     m = re.search(r"\?v=(\d+)", (ROOT / "index.html").read_text())
     return m.group(1) if m else "1"
 
@@ -93,10 +93,9 @@ def read_front_matter(text):
 
 
 def figures(markup):
-    """A paragraph holding nothing but an image becomes a figure; the image's
-    title becomes its caption. The title is pulled out separately rather than
-    in the same pattern — a lazy prefix will happily match it as ordinary
-    attribute text and leave the capture group empty."""
+    """A paragraph holding only an image becomes a figure, with the image's
+    title as its caption. The title is matched separately: inside the img
+    pattern a lazy prefix swallows it and the group comes back empty."""
     def swap(m):
         img = m.group(1)
         cap = re.search(r'title="([^"]*)"', img)
@@ -182,8 +181,7 @@ def build_index(pieces):
     return PAGE.format(
         title="writings.", desc="essays and notes.",
         up="../", v=V, home="../",
-        section="",          # the h1 already says it
-
+        section="",          # the h1 names the section
         body=body,
     )
 
@@ -209,15 +207,15 @@ def main():
     pieces.sort(key=lambda p: p["iso"], reverse=True)
     (OUT / "index.html").write_text(build_index(pieces), encoding="utf-8")
 
-    # pictures travel with the source
     src_img = SRC / "images"
     if src_img.is_dir():
         dest = OUT / "images"
         shutil.rmtree(dest, ignore_errors=True)
         shutil.copytree(src_img, dest)
-        print(f"  images/  {len(list(dest.iterdir()))} file(s)")
+        n = sum(1 for p in dest.rglob("*") if p.is_file() and not p.name.startswith("."))
+        print(f"  images/  {n} file(s)")
 
-    # a piece whose source is gone should stop being published
+    # remove pieces whose source is gone
     live = {p["slug"] for p in pieces}
     for d in OUT.iterdir():
         if d.is_dir() and d.name not in ("src", "images") and d.name not in live:

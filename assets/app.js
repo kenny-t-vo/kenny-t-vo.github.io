@@ -25,9 +25,7 @@
 
   /* ---------- view model: which pages sit side by side ---------- */
 
-  /* portrait pages open on a lone cover, then pair 2-3, 4-5 ...
-     2-up exports were already spreads before build.sh split them into
-     leaves, so those pair straight off. */
+  /* "cover": 1, 2-3, 4-5 ...   "spreads" (split 2-ups): 1-2, 3-4 ... */
   const spreads = (() => {
     const out = [];
     let p = 1;
@@ -79,12 +77,12 @@
         const a = document.createElement('a');
         a.className = 'pin';
         a.href = L.href;
-        /* the band covers the printed words while hovered, so say where it goes */
+        /* the hover band covers the printed words; the title shows the target */
         a.title = L.href.replace(/^mailto:/, '').replace(/\?subject=$/, '');
         a.setAttribute('aria-label', a.title);
         if (/^https?:/i.test(L.href)) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
-        /* url() in a custom property resolves against the stylesheet, not the
-           page, so hand it an absolute one */
+        /* url() in a custom property resolves against the stylesheet's url,
+           so it gets an absolute one */
         if (L.chip) a.style.setProperty('--chip', `url(${new URL(L.chip, location.href).href})`);
         a.style.left   = L.x * 100 + '%';
         a.style.top    = L.y * 100 + '%';
@@ -263,9 +261,8 @@
   document.getElementById('zoom-btn')
     .addEventListener('click', () => (lensEl.hidden ? openLens(idx) : closeLens()));
 
-  /* the lens holds the whole spread, so an image crossing the gutter stays
-     whole. page size is known up front, so the sheet is laid out and fitted
-     before anything loads. */
+  /* the lens shows the whole spread. page size comes from BOOK, so the sheet
+     is sized and fitted before any image loads. */
   function openLens(i) {
     lensIdx = Math.max(0, Math.min(views.length - 1, i));
     const view = views[lensIdx];
@@ -406,8 +403,7 @@
 
   /* ---------- rotate hint ---------- */
 
-  /* upright shows a single leaf with no hint that spreads exist. shown once,
-     on touch devices only, and not again after a spread is seen. */
+  /* touch devices only. shown once, and not after a spread has been seen. */
   const hintEl = document.getElementById('rotate-hint');
   const canRotate = matchMedia('(hover: none) and (pointer: coarse)').matches;
   const HINT_KEY = 'kv:spread-hint-done';
@@ -417,7 +413,7 @@
     try { return localStorage.getItem(HINT_KEY) === '1'; } catch { return false; }
   };
   const retireHint = () => {
-    try { localStorage.setItem(HINT_KEY, '1'); } catch { /* private window: fine */ }
+    try { localStorage.setItem(HINT_KEY, '1'); } catch { /* storage blocked */ }
   };
   function hideHint(forGood) {
     if (!hintEl) return;
@@ -430,7 +426,6 @@
     if (views === spreads) return hideHint(true);   // already seen a spread
     hintEl.hidden = false;
     clearTimeout(hintTimer);
-    /* 6s, then retire it so it is not shown again */
     hintTimer = setTimeout(() => hideHint(true), 6000);
   }
 
