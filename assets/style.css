@@ -24,8 +24,7 @@
 /* per book, keyed on <body data-book> */
 body[data-book="photography"]{ --gutter-strength:.25; }
 body[data-book="cv"]         { --gutter-strength:.25; }
-body[data-book="work"]       { --gutter-strength:0; }    /* off: its spreads
-                                                            were drawn flat */
+body[data-book="work"]       { --gutter-strength:.25; }
 
 /* ═══════════════════════════════════════════════════════════════════
    the viewer

@@ -1,9 +1,7 @@
 # kenny vo.
 
-My site, at <https://kenny-t-vo.github.io/>: photography, work samples, cv and
-writing. Plain HTML, CSS and JS on GitHub Pages. Two scripts build the generated
-parts: `build.sh` renders the PDFs to images and `writings.py` turns markdown into
-pages. The commands I actually run are in [UPDATING.md](UPDATING.md).
+My site, at <https://kenny-t-vo.github.io/>. Some photos, work, writing, cv, more
+soon.
 
 ## Layout
 
