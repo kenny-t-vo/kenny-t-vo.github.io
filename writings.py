@@ -49,7 +49,7 @@ PAGE = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{title} — kenny vo.</title>
+<title>kenny vo, {title}</title>
 <meta name="description" content="{desc}">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:title" content="{title}">
@@ -180,7 +180,7 @@ def build_index(pieces):
         body = '  <h1>writings.</h1>\n\n  <p class="empty">nothing here yet.</p>'
 
     return PAGE.format(
-        title="writings", desc="essays and notes.",
+        title="writings.", desc="essays and notes.",
         up="../", v=V, home="../",
         section="",          # the h1 already says it
 

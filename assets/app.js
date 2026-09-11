@@ -1,6 +1,6 @@
-/* Kenny Vo — photographic archive
-   Spread viewer: fit-to-window facing pages, keyboard/swipe navigation,
-   full-resolution zoom lens, and a spread index. No dependencies. */
+/* Spread viewer for the photography and work books: fit-to-window facing
+   pages, keyboard/swipe navigation, full-resolution zoom lens, and a spread
+   index. No dependencies. */
 
 (() => {
   const BOOK = window.BOOK || { pages: 32, aspect: 612 / 792 };

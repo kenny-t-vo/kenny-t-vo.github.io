@@ -1,6 +1,6 @@
 # updating the site
 
-Live at <https://kenny-t-vo.github.io/>. Repo `kenny-t-vo/kenny-t-vo.github.io` —
+Live at <https://kenny-t-vo.github.io/>. Repo `kenny-t-vo/kenny-t-vo.github.io`;
 the name is the hostname, so it cannot be renamed. Local folder
 `/Users/kenny/dev/kenny-vo-website`.
 
@@ -70,7 +70,7 @@ Browsers cache assets for ten minutes, so a style change needs a new version
 stamp or you will not see it:
 
 ```
-cd /Users/kenny/dev/kenny-vo-website && n=$(($(grep -o 'v=[0-9]*' index.html | head -1 | cut -dv -f2 | tr -d '=')+1)) && grep -rl "v=$((n-1))" . --exclude-dir=.git --exclude-dir=__pycache__ | xargs sed -i '' "s/v=$((n-1))/v=$n/g" && ./writings.py && git add -A && git commit -m "bump assets to v$n" && git pull --rebase && git push && echo "now at v$n"
+cd /Users/kenny/dev/kenny-vo-website && n=$(($(grep -o 'v=[0-9]*' index.html | head -1 | cut -dv -f2 | tr -d '=')+1)) && grep -rlI "v=$((n-1))" . --exclude-dir=.git --exclude-dir=__pycache__ | xargs sed -i '' "s/v=$((n-1))/v=$n/g" && ./writings.py && git add -A && git commit -m "bump assets to v$n" && git pull --rebase && git push && echo "now at v$n"
 ```
 
 ## looking before pushing
@@ -88,3 +88,11 @@ Pages takes a minute or two, and the CDN holds HTML for ten.
 ```
 gh api repos/kenny-t-vo/kenny-t-vo.github.io/actions/runs --jq '.workflow_runs[0] | "\(.status) \(.conclusion // "")"'
 ```
+
+## when a command stops
+
+`nothing to commit, working tree clean`: the build produced identical files. The
+`&&` chain stops before the push, so an earlier local commit stays unpushed.
+
+`your branch and 'origin/main' have diverged`: there is a commit on github.com and
+a different one here. `git pull --rebase`, then `git push`.

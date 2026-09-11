@@ -93,10 +93,7 @@ article a:hover, article a:focus-visible,
 /* ── figures ──────────────────────────────────────────────────────── */
 
 article figure{ margin-top:var(--s4); margin-bottom:var(--s4); }
-article figure img{
-  display:block; width:100%; height:auto;
-  box-shadow:0 0 0 1px var(--page-edge, var(--rule));
-}
+article figure img{ display:block; width:100%; height:auto; }
 article figcaption{
   margin-top:var(--s1);
   font-size:var(--t6); letter-spacing:.06em; line-height:1.5;
