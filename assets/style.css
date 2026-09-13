@@ -13,7 +13,7 @@
 
   /* ── the reading surface ───────────────────────────────────────── */
   --reading-ground:var(--bg);     /* pure white */
-  --page-edge:var(--rule);        /* hairline around the spread     */
+  --page-edge:color-mix(in srgb, var(--rule) 50%, transparent); /* hairline, half strength */
   --frame:clamp(16px,3.4vw,34px); /* margin from viewport to chrome */
 
   /* ── behaviour ─────────────────────────────────────────────────── */
