@@ -5,10 +5,9 @@ standfirst: how this site is set.
 ---
 
 This site has no build server or framework, and nothing running on
-the page except the spread viewers, which have to size a book to whatever window
-it lands in.
+the page except the spread viewers.
 
-## the faces
+## the faces.
 
 Titles are set in [Redaction 35](https://www.redaction.us/), drawn by Forest
 Young and Jeremy Mickel for an exhibition at MoMA PS1. It is released under the
@@ -26,17 +25,15 @@ the starting point, narrowed and sharpened for newsprint.
 
 Sizes come from six steps and nothing sits between them: 22, 16, 14, 12.5, 11
 and 10.5 pixels. Spacing runs on a single rhythm. Both are variables, so a
-change is one edit rather than forty.
+change is one edit.
 
-## the pages
+## the pages.
 
-The two link colours are the browser defaults, `#0000ee` and `#551a8b`, and they
-carry fixed meanings: blue is something you can open, purple something you have.
-Interface chrome is exempt, because a back link points at a page you have by
-definition already seen.
+The two hyperlink colours are the browser defaults, `#0000ee` and `#551a8b`: blue
+is something you can open, purple something you have. Interface chrome is exempt,
+because a back link points at a page you have by definition already seen.
 
-> Hairlines do the separating. Nothing has a shadow, a gradient, or a rounded
-> corner except an image.
+> Hairlines separate blocks when necessary.
 
 The portfolios are PDFs rendered to WebP at three resolutions, one to read, one
 to zoom into, one for the index, and their hyperlinks are lifted out of the PDF
@@ -45,7 +42,7 @@ you can follow.
 
 ## writing
 
-Pieces like this one are markdown files. They support what an essay needs:
+Pieces like this one are markdown files, as they support:
 
 - headings, emphasis, and inline links
 - footnotes, which collect under a rule at the end
