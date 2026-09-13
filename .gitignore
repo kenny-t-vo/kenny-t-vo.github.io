@@ -2,3 +2,4 @@
 *.indd
 __pycache__/
 *.pyc
+books.local
