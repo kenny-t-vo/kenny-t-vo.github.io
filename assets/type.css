@@ -32,6 +32,34 @@
   font-weight:600; font-style:normal;
 }
 
+/* Times New Roman set to Plantin Light's line metrics (ascent 695, descent
+   305 per 1000) so it sits on the same baseline. 104% because Times sets
+   about 6% narrower at a matching x-height (447 vs 450). */
+@font-face{
+  font-family:"Plantin fallback";
+  src:local("TimesNewRomanPSMT"), local("Times New Roman");
+  font-weight:400; font-style:normal;
+  size-adjust:104%; ascent-override:69.5%; descent-override:30.5%; line-gap-override:0%;
+}
+@font-face{
+  font-family:"Plantin fallback";
+  src:local("TimesNewRomanPS-ItalicMT"), local("Times New Roman Italic");
+  font-weight:400; font-style:italic;
+  size-adjust:104%; ascent-override:69.5%; descent-override:30.5%; line-gap-override:0%;
+}
+@font-face{
+  font-family:"Plantin fallback";
+  src:local("TimesNewRomanPS-BoldMT"), local("Times New Roman Bold");
+  font-weight:700; font-style:normal;
+  size-adjust:104%; ascent-override:69.5%; descent-override:30.5%; line-gap-override:0%;
+}
+@font-face{
+  font-family:"Plantin fallback";
+  src:local("TimesNewRomanPS-BoldItalicMT"), local("Times New Roman Bold Italic");
+  font-weight:700; font-style:italic;
+  size-adjust:104%; ascent-override:69.5%; descent-override:30.5%; line-gap-override:0%;
+}
+
 :root{
   /* ── ground and ink ───────────────────────────────────────────── */
   --bg:#fff;
@@ -51,7 +79,7 @@
      body:    Plantin MT Pro, else Times New Roman (drawn from Plantin).
      figures use the body face.                                          */
   --display:"Redaction 35","Times New Roman",Times,serif;
-  --body:"Plantin","Plantin MT Pro","Times New Roman",Times,
+  --body:"Plantin","Plantin MT Pro","Plantin fallback","Times New Roman",Times,
          "Liberation Serif","Hiragino Mincho ProN","Yu Mincho",serif;
 
   /* ── six steps ────────────────────────────────────────────────────
