@@ -130,8 +130,12 @@ names it first and it shows only where it is installed, as on my machine through
 Adobe Fonts. Everyone else gets Times New Roman, which was drawn from Plantin.
 
 `assets/type.css` has six sizes, `--t1` to `--t6`: 22 / 16 / 14 / 12.5 / 11 /
-10.5 px. Spacing is `--s1` to `--s5`: 6 / 12 / 22 / 40 / 72 px. The hover band is
-an absolutely positioned pseudo-element, so hovering never reflows a line.
+10.5 px. Spacing is `--s0` to `--s5`: 3 / 6 / 12 / 22 / 40 / 72 px. Every rule, page
+edge and focus ring is `--hair`: .5px on a 2x screen and 1px on 1x. Safari draws that
+as one device pixel; Chrome rounds borders up to a whole pixel and thins only the page
+edge, which is a box-shadow. Figures take the body face with tabular numerals. The
+hover band is an absolutely positioned pseudo-element, so hovering never reflows a
+line.
 
 ## Caching
 

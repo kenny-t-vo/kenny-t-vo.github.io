@@ -15,8 +15,8 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fff'/><rect x='6' y='7' width='9' height='18' fill='%230000ee'/><rect x='17' y='7' width='9' height='18' fill='%230000ee'/></svg>">
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/redaction-35-400.woff2" crossorigin>
 <link rel="preload" as="image" href="pages/1.webp">
-<link rel="stylesheet" href="../assets/type.css?v=20">
-<link rel="stylesheet" href="../assets/style.css?v=20">
+<link rel="stylesheet" href="../assets/type.css?v=21">
+<link rel="stylesheet" href="../assets/style.css?v=21">
 <style>
   /* page count and aspect come from pages.js. height is the smaller of the
      window height and the width over --ar. */
@@ -28,7 +28,7 @@
     height:min(calc(100svh - 2 * var(--pad-y)),
                calc((100vw - 2 * var(--pad-x)) / var(--ar, 1.545)));
     background:var(--bg);
-    box-shadow:0 0 0 1px var(--page-edge);
+    box-shadow:0 0 0 var(--hair) var(--page-edge);
     position:relative;
   }
   .sheet .page{
@@ -68,7 +68,7 @@
       box-shadow:none;
     }
     .sheet::after{ display:none; }        /* stacked: there is no gutter */
-    .sheet .page{ height:auto; box-shadow:0 0 0 1px var(--page-edge); background:var(--bg); }
+    .sheet .page{ height:auto; box-shadow:0 0 0 var(--hair) var(--page-edge); background:var(--bg); }
     .sheet .page img{ height:auto; }
   }
 </style>
@@ -91,7 +91,7 @@
   <a class="tool invert" id="close" href="../">close.</a>
 </footer>
 
-<script src="pages.js?v=20"></script>
+<script src="pages.js?v=21"></script>
 <script>
 (() => {
   const CV = window.CV || { pages: 0, aspect: 0.7725, links: {} };

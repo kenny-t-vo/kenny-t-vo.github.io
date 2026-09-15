@@ -21,7 +21,7 @@ body{
   display:flex; gap:.55em; align-items:baseline;
   margin-bottom:calc(var(--s5) * 1.2);
   font:400 var(--t2)/1 var(--display);
-  letter-spacing:.004em;
+  letter-spacing:var(--track-t2);
 }
 
 /* ── the piece ────────────────────────────────────────────────────── */
@@ -29,11 +29,11 @@ body{
 /* -.201em = half-leading + (ascent - cap height), this face at 1.06 */
 h1{
   font:400 var(--t1)/1.06 var(--display);
-  letter-spacing:-.012em;
+  letter-spacing:var(--track-t1);
   margin:-0.201em 0 var(--s2);
 }
 .dateline{
-  font-size:var(--t6); letter-spacing:.09em; color:var(--faint);
+  font-size:var(--t6); letter-spacing:var(--track-label); color:var(--faint);
   margin-bottom:var(--s3);
 }
 .standfirst{
@@ -46,7 +46,7 @@ article > * + *{ margin-top:1.05em; }
 
 article h2{
   font:400 var(--t2)/1.25 var(--display);
-  letter-spacing:.004em;
+  letter-spacing:var(--track-t2);
   margin-top:var(--s4);
 }
 article h3{
@@ -62,11 +62,11 @@ article ul{ list-style:square; }
 
 article blockquote{
   padding-left:1.4em;
-  border-left:1px solid var(--rule);
+  border-left:var(--hair) solid var(--rule);
   color:var(--dim);
 }
 
-article hr{ border:0; border-top:1px solid var(--rule); margin:var(--s4) 0; }
+article hr{ border:0; border-top:var(--hair) solid var(--rule); margin:var(--s4) 0; }
 
 article strong{ font-weight:600; }
 article code{
@@ -103,7 +103,7 @@ article figcaption{
 .footnote{
   margin-top:var(--s5);
   padding-top:var(--s2);
-  border-top:1px solid var(--rule2);
+  border-top:var(--hair) solid var(--rule2);
   font-size:var(--t5);
   line-height:1.6;
   color:var(--dim);
@@ -126,8 +126,11 @@ sup{ font-size:.72em; line-height:0; vertical-align:.42em; }
   display:grid; grid-template-columns:1fr auto;
   gap:1em; align-items:baseline;
 }
-.pieces .name{ font:400 var(--t2)/1.25 var(--display); letter-spacing:.004em; }
-.pieces .when{ font-size:var(--t5); color:var(--faint); white-space:nowrap; }
+.pieces .name{ font:400 var(--t2)/1.25 var(--display); letter-spacing:var(--track-t2); }
+.pieces .when{
+  font:var(--t5)/1.25 var(--figures); font-variant-numeric:tabular-nums;
+  color:var(--faint); white-space:nowrap;
+}
 .pieces .about{
   margin-top:var(--s1);
   font-size:var(--t4); line-height:1.6; color:var(--dim);

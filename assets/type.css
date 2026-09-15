@@ -70,6 +70,13 @@
   --rule2:#111;       /* structural rule */
   --wash:#f2f2f7;     /* code backgrounds */
 
+  /* one device pixel: .5px on a 2x screen, 1px on 1x through the media
+     query below. every rule, page edge and focus ring is drawn from it.
+     webkit draws a .5px border at one device pixel; chromium rounds borders
+     and outlines up to 1px and honours .5px only as a box-shadow spread,
+     which is what the page edge uses. link underlines stay 1px. */
+  --hair:.5px;
+
   /* browser-default link colours: blue = unvisited, purple = visited */
   --blue:#0000ee;
   --purple:#551a8b;
@@ -81,6 +88,7 @@
   --display:"Redaction 35","Times New Roman",Times,serif;
   --body:"Plantin","Plantin MT Pro","Plantin fallback","Times New Roman",Times,
          "Liberation Serif","Hiragino Mincho ProN","Yu Mincho",serif;
+  --figures:var(--body);    /* with font-variant-numeric:tabular-nums */
 
   /* ── six steps ────────────────────────────────────────────────────
      t1  the one large thing on a screen      display
@@ -97,6 +105,7 @@
   --t6:10.5px;
 
   /* ── spacing ──────────────────────────────────────────────────── */
+  --s0:3px;           /* inside controls */
   --s1:6px;
   --s2:12px;
   --s3:22px;
@@ -112,11 +121,19 @@
 
   /* body tracking. -.01em is -10 in indesign's 1/1000 em units.
      the display face is not affected: every rule using --display
-     declares its own letter-spacing. */
+     declares its own letter-spacing, from the two display values. */
   --track:-.01em;
+  --track-label:.09em;     /* labels at t6. a serif needs less than a mono */
+  --track-t1:-.012em;      /* the display face at t1 */
+  --track-t2:.004em;       /* the display face at t2 */
 }
 
+@media (max-resolution:1.5dppx){ :root{ --hair:1px; } }
+
 *{ box-sizing:border-box; margin:0; padding:0; }
+
+/* an author display rule on the element beats the attribute; declared once */
+[hidden]{ display:none !important; }
 
 body{
   background:var(--bg);
