@@ -11,27 +11,28 @@ which it always does once you have edited a source file.
 
 ## the books
 
-Re-render a PDF, commit, push. The PDF locations live in `books.local` beside this
-file, which is not committed, and each command reads it first. The CV command picks
-the newest `Vo_Kenny_CV_*.pdf` in `CV_DIR` on its own, so it survives the monthly
-rename.
+Re-render a PDF, commit, push. The PDF folders live in `books.local` beside this
+file, which is not committed, and each command reads it first. Each command picks
+the newest matching PDF in its folder by modification time, so a new export with a
+new name needs no edit here: `Photography Portfolio*.pdf` in `PHOTOGRAPHY_DIR`,
+`*Work Samples*.pdf` in `WORK_DIR`, `Vo_Kenny_CV_*.pdf` in `CV_DIR`.
 
 **everything**
 
 ```
-cd /Users/kenny/dev/kenny-vo-website && . ./books.local && ./build.sh "$PHOTOGRAPHY_PDF" photography && ./build.sh "$WORK_PDF" work && ./build.sh "$(ls -t "$CV_DIR"/Vo_Kenny_CV_*.pdf | head -1)" cv && git add -A && git commit -m "update books" && git pull --rebase && git push
+cd /Users/kenny/dev/kenny-vo-website && . ./books.local && ./build.sh "$(ls -t "$PHOTOGRAPHY_DIR"/Photography\ Portfolio*.pdf | head -1)" photography && ./build.sh "$(ls -t "$WORK_DIR"/*Work\ Samples*.pdf | head -1)" work && ./build.sh "$(ls -t "$CV_DIR"/Vo_Kenny_CV_*.pdf | head -1)" cv && git add -A && git commit -m "update books" && git pull --rebase && git push
 ```
 
 **photography**
 
 ```
-cd /Users/kenny/dev/kenny-vo-website && . ./books.local && ./build.sh "$PHOTOGRAPHY_PDF" photography && git add -A && git commit -m "update photography" && git pull --rebase && git push
+cd /Users/kenny/dev/kenny-vo-website && . ./books.local && ./build.sh "$(ls -t "$PHOTOGRAPHY_DIR"/Photography\ Portfolio*.pdf | head -1)" photography && git add -A && git commit -m "update photography" && git pull --rebase && git push
 ```
 
 **work samples**
 
 ```
-cd /Users/kenny/dev/kenny-vo-website && . ./books.local && ./build.sh "$WORK_PDF" work && git add -A && git commit -m "update work samples" && git pull --rebase && git push
+cd /Users/kenny/dev/kenny-vo-website && . ./books.local && ./build.sh "$(ls -t "$WORK_DIR"/*Work\ Samples*.pdf | head -1)" work && git add -A && git commit -m "update work samples" && git pull --rebase && git push
 ```
 
 **cv**
@@ -40,12 +41,12 @@ cd /Users/kenny/dev/kenny-vo-website && . ./books.local && ./build.sh "$WORK_PDF
 cd /Users/kenny/dev/kenny-vo-website && . ./books.local && ./build.sh "$(ls -t "$CV_DIR"/Vo_Kenny_CV_*.pdf | head -1)" cv && git add -A && git commit -m "update cv" && git pull --rebase && git push
 ```
 
-If a portfolio's filename changes, edit its path in `books.local`. On a new machine,
-create that file with three lines:
+If a folder moves, edit its path in `books.local`. On a new machine, create that
+file with three lines:
 
 ```
-PHOTOGRAPHY_PDF="/path/to/the photography portfolio.pdf"
-WORK_PDF="/path/to/the work samples.pdf"
+PHOTOGRAPHY_DIR="/folder/holding/the photography portfolio pdfs"
+WORK_DIR="/folder/holding/the work samples pdfs"
 CV_DIR="/folder/holding/the cv pdfs"
 ```
 
