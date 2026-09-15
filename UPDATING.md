@@ -51,7 +51,8 @@ CV_DIR="/folder/holding/the cv pdfs"
 
 ## writing
 
-Drop a `.md` or `.docx` in `writings/src/`, then:
+Drop a `.md` or `.docx` in the Blog folder on mirai (`writings/src/` is a symlink to
+it, so the drive has to be mounted), then:
 
 ```
 cd /Users/kenny/dev/kenny-vo-website && ./writings.py && git add -A && git commit -m "new writing" && git pull --rebase && git push

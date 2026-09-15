@@ -21,7 +21,8 @@ cv/
   pages/              generated: one lossless tier
   Vo_Kenny_CV.pdf     generated: copy for the download link
 writings/
-  src/                markdown, one file per piece; images in src/images/
+  src/                untracked symlink to the writing folder on an external drive:
+                      markdown, one file per piece; images in src/images/
   index.html          generated: the list
   <slug>/index.html   generated: one piece
   images/             generated: copy of src/images/
@@ -99,8 +100,10 @@ Work is off because its spreads were drawn flat.
 
 `writings.py` builds every `.md` in `writings/src/` into `writings/<filename>/` and
 rebuilds the index, newest first. A `.docx` is converted first if pandoc is
-installed. `_name.md` is a draft and is skipped. Deleting a source removes its page
-on the next run.
+installed. `_name.md` is a draft and is skipped, as are `._` metadata files. Deleting a
+source removes its page on the next run. `writings/src` is a symlink to a folder on an
+external drive and is not committed; when the drive is not mounted the script exits
+before building or removing anything.
 
 Front matter, all optional:
 

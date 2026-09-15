@@ -187,10 +187,12 @@ def build_index(pieces):
 
 
 def main():
-    SRC.mkdir(parents=True, exist_ok=True)
+    # src is a symlink to the mirai volume; unmounted, every piece would be removed
+    if not SRC.is_dir():
+        sys.exit(f"{SRC} is not reachable, is the mirai volume mounted?")
     sources = sorted(p for p in SRC.iterdir()
                      if p.suffix.lower() in (".md", ".markdown", ".docx")
-                     and not p.name.startswith("_"))   # _name.md is a draft
+                     and not p.name.startswith(("_", ".")))   # _name.md is a draft, ._name.md is macOS metadata
 
     pieces = []
     for path in sources:
@@ -211,7 +213,8 @@ def main():
     if src_img.is_dir():
         dest = OUT / "images"
         shutil.rmtree(dest, ignore_errors=True)
-        shutil.copytree(src_img, dest)
+        shutil.copytree(src_img, dest, copy_function=shutil.copyfile,   # the volume's modes are rwx------
+                        ignore=shutil.ignore_patterns("._*", ".DS_Store"))
         n = sum(1 for p in dest.rglob("*") if p.is_file() and not p.name.startswith("."))
         print(f"  images/  {n} file(s)")
 
