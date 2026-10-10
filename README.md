@@ -11,7 +11,7 @@ assets/type.css       shared: faces, sizes, colours, the hover band
 assets/style.css      the PDF viewer; tunable values at the top
 assets/app.js         the PDF viewer: pairing, fit-to-window, zoom lens, index
 assets/writing.css    the writing pages
-assets/fonts/         Redaction 35 and its licence
+assets/fonts/         Hiep Hoa 35 and Long An, with their licences
 assets/social.png     share card
 photography/          book shell; book.js and pages/ are generated
 work/                 same, for the work samples
@@ -123,11 +123,13 @@ tables and code all render. Needs `pip3 install markdown`.
 
 ## Type
 
-Redaction 35 for titles and the wordmark, Plantin MT Pro for everything else,
-including folios and labels. Redaction is SIL OFL and self-hosted in
-`assets/fonts/`. Plantin is an Adobe font and can't be redistributed, so the stack
-names it first and it shows only where it is installed, as on my machine through
-Adobe Fonts. Everyone else gets Times New Roman, which was drawn from Plantin.
+Hiep Hoa 35 for titles and the wordmark, Long An for everything else, including
+folios and labels. Both are my own faces, Hiep Hoa from Redaction and Long An from
+STIX Two Text, SIL OFL, self-hosted in `assets/fonts/` as Latin and Vietnamese
+subsets with their licences. The body is Long An Light, declared as weight 400,
+with its Light Italic and its Semibold at 600. Until the files load, the stack
+shows Times New Roman set to Long An's width and line metrics. Long An at tracking
+0 sets as Plantin Light did at -10, so `--track` is 0.
 
 `assets/type.css` has six sizes, `--t1` to `--t6`: 22 / 16 / 14 / 12.5 / 11 /
 10.5 px. Spacing is `--s0` to `--s5`: 3 / 6 / 12 / 22 / 40 / 72 px. Every rule, page
