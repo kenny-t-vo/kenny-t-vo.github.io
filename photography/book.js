@@ -5,16 +5,5 @@ window.BOOK = {
   fullWidth: 2600,     /* px width of the zoom tier */
   pairing: "cover",   /* "cover": 1, 2-3 ... N alone | "spreads": 1-2, 3-4 ... */
   /* link rects, as fractions of a leaf */
-  links: {
-  "32": [
-    {
-      "x": 0.35559,
-      "y": 0.63654,
-      "w": 0.1492,
-      "h": 0.01636,
-      "href": "mailto:kenny.t.vo%40outlook.com?subject=",
-      "chip": "pages/link/32-0.webp"
-    }
-  ]
-}
+  links: {}
 };
